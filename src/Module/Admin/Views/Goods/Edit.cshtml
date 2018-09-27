@@ -1,0 +1,95 @@
+﻿@{
+	Layout = "";
+	GoodsInfo item = ViewBag.item;
+	var fk_tags = Tag.Select.ToList();
+	var fk_Categorys = Category.Select.ToList();
+}
+
+<div class="box">
+	<div class="box-header with-border">
+		<h3 class="box-title" id="box-title"></h3>
+	</div>
+	<div class="box-body">
+		<div class="table-responsive">
+			<form id="form_add" method="post">
+				@Html.AntiForgeryToken()
+				<input type="hidden" name="__callback" value="edit_callback" />
+				<div>
+					<table cellspacing="0" rules="all" class="table table-bordered table-hover" border="1" style="border-collapse:collapse;">
+						@if (item != null) {
+							<tr>
+								<td>产品id（自增）</td>
+								<td><input name="Id" type="text" readonly class="datepicker" style="width:20%;background-color:#ddd;" /></td>
+							</tr>
+						}
+						<tr>
+							<td>分类id</td>
+							<td id="Category_id_td"></td>
+						</tr>
+						<tr>
+							<td>产品介绍</td>
+							<td><input name="Content" type="text" class="datepicker" style="width:60%;" /></td>
+						</tr>
+						<tr>
+							<td>图片</td>
+							<td><input name="Imgs" type="text" class="datepicker" style="width:60%;" /></td>
+						</tr>
+						<tr>
+							<td>库存</td>
+							<td><input name="Stock" type="text" class="form-control" data-inputmask="'mask': '9', 'repeat': 6, 'greedy': false" data-mask style="width:200px;" /></td>
+						</tr>
+						<tr>
+							<td>标题</td>
+							<td><input name="Title" type="text" class="datepicker" style="width:60%;" /></td>
+						</tr>
+						<tr>
+							<td>tag</td>
+							<td>
+								<select name="mn_Tag" data-placeholder="Select a tag" class="form-control select2" multiple>
+									@foreach (TagInfo fk in fk_tags) { <option value="@fk.Id">@fk.Name</option> }
+								</select>
+							</td>
+						</tr>
+						@if (item != null) {
+							<tr>
+								<td>创建时间</td>
+								<td><input name="Create_time" type="text" readonly class="datepicker" style="width:20%;background-color:#ddd;" /></td>
+							</tr>
+							<tr>
+								<td>更新时间</td>
+								<td><input name="Update_time" type="text" readonly class="datepicker" style="width:20%;background-color:#ddd;" /></td>
+							</tr>
+						}
+						<tr>
+							<td width="8%">&nbsp</td>
+							<td><input type="submit" value="@(item == null ? "添加" : "更新")" />&nbsp;<input type="button" value="取消" /></td>
+						</tr>
+					</table>
+				</div>
+			</form>
+
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+	(function () {
+		top.edit_callback = function (rt) {
+			if (rt.success) return top.mainViewNav.goto('./?' + new Date().getTime());
+			alert(rt.message);
+		};
+
+		$('#Category_id_td').html(yieldTreeSelect(yieldTreeArray(@Html.Json(fk_Categorys), null, 'Id', 'Parent_id'), '{#Name}', 'Id')).find('select').attr('name', 'Category_id');
+		var form = $('#form_add')[0];
+		var item = null;
+		@if (item != null) {
+			<text>
+			item = @Html.Json(item);
+			fillForm(form, item);
+			item.mn_Tag = @Html.Json(item.Obj_tags);
+			for (var a = 0; a < item.mn_Tag.length; a++) $(form.mn_Tag).find('option[value="{0}"]'.format(item.mn_Tag[a].Id)).attr('selected', 'selected');
+			</text>
+		}
+		top.mainViewInit();
+	})();
+</script>

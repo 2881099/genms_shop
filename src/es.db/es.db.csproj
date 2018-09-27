@@ -1,0 +1,10 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<AssemblyName>es.db</AssemblyName>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="dng.Mssql" Version="1.1.14" />
+		<PackageReference Include="CSRedisCore" Version="2.6.6" />
+	</ItemGroup>
+</Project>

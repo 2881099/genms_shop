@@ -1,0 +1,67 @@
+﻿@{
+	Layout = "";
+	TagInfo item = ViewBag.item;
+	var fk_goodss = Goods.Select.ToList();
+}
+
+<div class="box">
+	<div class="box-header with-border">
+		<h3 class="box-title" id="box-title"></h3>
+	</div>
+	<div class="box-body">
+		<div class="table-responsive">
+			<form id="form_add" method="post">
+				@Html.AntiForgeryToken()
+				<input type="hidden" name="__callback" value="edit_callback" />
+				<div>
+					<table cellspacing="0" rules="all" class="table table-bordered table-hover" border="1" style="border-collapse:collapse;">
+						@if (item != null) {
+							<tr>
+								<td>标签id（自增）</td>
+								<td><input name="Id" type="text" readonly class="datepicker" style="width:20%;background-color:#ddd;" /></td>
+							</tr>
+						}
+						<tr>
+							<td>标签名</td>
+							<td><input name="Name" type="text" class="datepicker" style="width:60%;" /></td>
+						</tr>
+						<tr>
+							<td>goods</td>
+							<td>
+								<select name="mn_Goods" data-placeholder="Select a goods" class="form-control select2" multiple>
+									@foreach (GoodsInfo fk in fk_goodss) { <option value="@fk.Id">@fk.Title</option> }
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<td width="8%">&nbsp</td>
+							<td><input type="submit" value="@(item == null ? "添加" : "更新")" />&nbsp;<input type="button" value="取消" /></td>
+						</tr>
+					</table>
+				</div>
+			</form>
+
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+	(function () {
+		top.edit_callback = function (rt) {
+			if (rt.success) return top.mainViewNav.goto('./?' + new Date().getTime());
+			alert(rt.message);
+		};
+
+		var form = $('#form_add')[0];
+		var item = null;
+		@if (item != null) {
+			<text>
+			item = @Html.Json(item);
+			fillForm(form, item);
+			item.mn_Goods = @Html.Json(item.Obj_goodss);
+			for (var a = 0; a < item.mn_Goods.length; a++) $(form.mn_Goods).find('option[value="{0}"]'.format(item.mn_Goods[a].Id)).attr('selected', 'selected');
+			</text>
+		}
+		top.mainViewInit();
+	})();
+</script>

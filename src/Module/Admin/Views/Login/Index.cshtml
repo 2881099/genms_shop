@@ -1,0 +1,94 @@
+﻿@{
+	Layout = "";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>es后台管理中心 - 登陆</title>
+	<!-- Tell the browser to be responsive to screen width -->
+	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+	<link rel="stylesheet" href="/module/admin/htm/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="/module/admin/htm/plugins/font-awesome/css/font-awesome.min.css" />
+	<link rel="stylesheet" href="/module/admin/htm/css/system.css">
+	<script type="text/javascript" src="/module/admin/htm/js/jQuery-2.1.4.min.js"></script>
+	<script type="text/javascript" src="/module/admin/htm/js/lib.js"></script>
+	<!--[if lt IE 9]>
+	<script type='text/javascript' src='/module/admin/htm/plugins/html5shiv/html5shiv.min.js'></script>
+	<script type='text/javascript' src='/module/admin/htm/plugins/respond/respond.min.js'></script>
+	<![endif]-->
+
+<style type="text/css">
+.login-box-body--has-errors{animation:shake .5s .25s 1;-webkit-animation:shake .5s .25s 1}
+@@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-10px)}40%,80%{transform:translateX(10px)}}
+@@-webkit-keyframes shake{0%,100%{-webkit-transform:translateX(0)}20%,60%{-webkit-transform:translateX(-10px)}40%,80%{-webkit-transform:translateX(10px)}}
+</style>
+
+</head>
+<body class="hold-transition login-page">
+	<div class="login-box">
+		<div class="login-logo">
+			<a href="/module/admin/"><b>es</b>后台管理中心</a>
+		</div>
+
+		<div id="error_msg" style="display:none;">
+			<div class="alert alert-warning alert-dismissible">
+				<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+				<h4><i class="icon fa fa-warning"></i>警告!</h4>
+				{0}
+			</div>
+		</div>
+
+		<!-- /.login-logo -->
+		<div class="login-box-body">
+			<p class="login-box-msg"></p>
+
+			<iframe name="iframe_form_login" hidden></iframe>
+			<form id="form_login" method="post" target="iframe_form_login">
+				@Html.AntiForgeryToken()
+				<input type="hidden" name="__callback" value="login_callback" />
+				<div class="form-group has-feedback">
+					<input name="username" type="text" class="form-control" placeholder="Username">
+					<span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+				</div>
+				<div class="form-group has-feedback">
+					<input name="password" type="password" class="form-control" placeholder="Password">
+					<span class="glyphicon glyphicon-lock form-control-feedback"></span>
+				</div>
+				<div class="row">
+					<div class="col-xs-8">
+					</div>
+					<!-- /.col -->
+					<div class="col-xs-4">
+						<button type="submit" class="btn btn-primary btn-block btn-flat">登 陆</button>
+					</div>
+					<!-- /.col -->
+				</div>
+			</form>
+
+		</div>
+		<!-- /.login-box-body -->
+	</div>
+	<!-- /.login-box -->
+
+	<!-- jQuery 2.2.0 -->
+	<script src="/module/admin/htm/plugins/jQuery/jQuery-2.2.0.min.js"></script>
+	<script src="/module/admin/htm/bootstrap/js/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+	(function () {
+		var msgtpl = $('#error_msg').html();
+		top.login_callback = function (rt) {
+			if (rt.success) return location.href = '/module/admin/';
+			$('#error_msg').html(msgtpl.format(rt.message)).show();
+			$('div.login-box-body').addClass('login-box-body--has-errors');
+			setTimeout(function () {
+				$('div.login-box-body').removeClass('login-box-body--has-errors');
+			}, 2000);
+		};
+	})();
+</script>
+</body>
+</html>

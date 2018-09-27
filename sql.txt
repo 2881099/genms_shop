@@ -1,0 +1,152 @@
+/****** Object:  Table [dbo].[category]    Script Date: 2018/9/27 13:07:22 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[category](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[parent_id] [int] NULL,
+	[name] [nvarchar](128) NULL,
+	[create_time] [datetime] NULL,
+ CONSTRAINT [PK_category] PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[comment]    Script Date: 2018/9/27 13:07:22 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[comment](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[goods_id] [int] NULL,
+	[nickname] [nvarchar](64) NULL,
+	[content] [nvarchar](max) NULL,
+	[create_time] [datetime] NULL,
+	[update_time] [datetime] NULL,
+ CONSTRAINT [PK_comment] PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[goods]    Script Date: 2018/9/27 13:07:22 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[goods](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[category_id] [int] NULL,
+	[title] [nvarchar](256) NULL,
+	[imgs] [nvarchar](1024) NULL,
+	[stock] [int] NULL,
+	[content] [nvarchar](max) NULL,
+	[create_time] [datetime] NULL,
+	[update_time] [datetime] NULL,
+ CONSTRAINT [PK_goods] PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[goods_tag]    Script Date: 2018/9/27 13:07:22 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[goods_tag](
+	[goods_id] [int] NOT NULL,
+	[tag_id] [int] NOT NULL,
+ CONSTRAINT [PK_goods_tag] PRIMARY KEY CLUSTERED 
+(
+	[goods_id] ASC,
+	[tag_id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[tag]    Script Date: 2018/9/27 13:07:22 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[tag](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[name] [nvarchar](64) NULL,
+ CONSTRAINT [PK_tag] PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[category]  WITH CHECK ADD  CONSTRAINT [FK_category_category] FOREIGN KEY([parent_id])
+REFERENCES [dbo].[category] ([id])
+GO
+ALTER TABLE [dbo].[category] CHECK CONSTRAINT [FK_category_category]
+GO
+ALTER TABLE [dbo].[comment]  WITH CHECK ADD  CONSTRAINT [FK_comment_goods] FOREIGN KEY([goods_id])
+REFERENCES [dbo].[goods] ([id])
+GO
+ALTER TABLE [dbo].[comment] CHECK CONSTRAINT [FK_comment_goods]
+GO
+ALTER TABLE [dbo].[goods]  WITH CHECK ADD  CONSTRAINT [FK_goods_category] FOREIGN KEY([category_id])
+REFERENCES [dbo].[category] ([id])
+GO
+ALTER TABLE [dbo].[goods] CHECK CONSTRAINT [FK_goods_category]
+GO
+ALTER TABLE [dbo].[goods_tag]  WITH CHECK ADD  CONSTRAINT [FK_goods_tag_goods] FOREIGN KEY([goods_id])
+REFERENCES [dbo].[goods] ([id])
+GO
+ALTER TABLE [dbo].[goods_tag] CHECK CONSTRAINT [FK_goods_tag_goods]
+GO
+ALTER TABLE [dbo].[goods_tag]  WITH CHECK ADD  CONSTRAINT [FK_goods_tag_tag] FOREIGN KEY([tag_id])
+REFERENCES [dbo].[tag] ([id])
+GO
+ALTER TABLE [dbo].[goods_tag] CHECK CONSTRAINT [FK_goods_tag_tag]
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'分类id（自增）' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'category', @level2type=N'COLUMN',@level2name=N'id'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'父级分类id' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'category', @level2type=N'COLUMN',@level2name=N'parent_id'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'分类名称' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'category', @level2type=N'COLUMN',@level2name=N'name'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'创建时间' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'category', @level2type=N'COLUMN',@level2name=N'create_time'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'评论id（自增）' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'comment', @level2type=N'COLUMN',@level2name=N'id'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'产品id' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'comment', @level2type=N'COLUMN',@level2name=N'goods_id'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'评论者' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'comment', @level2type=N'COLUMN',@level2name=N'nickname'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'评论内容' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'comment', @level2type=N'COLUMN',@level2name=N'content'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'创建时间' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'comment', @level2type=N'COLUMN',@level2name=N'create_time'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'更新时间' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'comment', @level2type=N'COLUMN',@level2name=N'update_time'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'产品id（自增）' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'goods', @level2type=N'COLUMN',@level2name=N'id'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'分类id' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'goods', @level2type=N'COLUMN',@level2name=N'category_id'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'标题' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'goods', @level2type=N'COLUMN',@level2name=N'title'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'图片' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'goods', @level2type=N'COLUMN',@level2name=N'imgs'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'库存' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'goods', @level2type=N'COLUMN',@level2name=N'stock'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'产品介绍' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'goods', @level2type=N'COLUMN',@level2name=N'content'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'创建时间' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'goods', @level2type=N'COLUMN',@level2name=N'create_time'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'更新时间' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'goods', @level2type=N'COLUMN',@level2name=N'update_time'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'产品id' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'goods_tag', @level2type=N'COLUMN',@level2name=N'goods_id'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'标签id' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'goods_tag', @level2type=N'COLUMN',@level2name=N'tag_id'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'标签id（自增）' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'tag', @level2type=N'COLUMN',@level2name=N'id'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'标签名' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'tag', @level2type=N'COLUMN',@level2name=N'name'
+GO

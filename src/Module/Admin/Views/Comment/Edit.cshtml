@@ -1,0 +1,80 @@
+﻿@{
+	Layout = "";
+	CommentInfo item = ViewBag.item;
+	var fk_Goodss = Goods.Select.ToList();
+}
+
+<div class="box">
+	<div class="box-header with-border">
+		<h3 class="box-title" id="box-title"></h3>
+	</div>
+	<div class="box-body">
+		<div class="table-responsive">
+			<form id="form_add" method="post">
+				@Html.AntiForgeryToken()
+				<input type="hidden" name="__callback" value="edit_callback" />
+				<div>
+					<table cellspacing="0" rules="all" class="table table-bordered table-hover" border="1" style="border-collapse:collapse;">
+						@if (item != null) {
+							<tr>
+								<td>评论id（自增）</td>
+								<td><input name="Id" type="text" readonly class="datepicker" style="width:20%;background-color:#ddd;" /></td>
+							</tr>
+						}
+						<tr>
+							<td>产品id</td>
+							<td>
+								<select name="Goods_id">
+									<option value="">------ 请选择 ------</option>
+									@foreach (var fk in fk_Goodss) { <option value="@fk.Id">@fk.Title</option> }
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<td>评论内容</td>
+							<td><input name="Content" type="text" class="datepicker" style="width:60%;" /></td>
+						</tr>
+						<tr>
+							<td>评论者</td>
+							<td><input name="Nickname" type="text" class="datepicker" style="width:60%;" /></td>
+						</tr>
+						@if (item != null) {
+							<tr>
+								<td>创建时间</td>
+								<td><input name="Create_time" type="text" readonly class="datepicker" style="width:20%;background-color:#ddd;" /></td>
+							</tr>
+							<tr>
+								<td>更新时间</td>
+								<td><input name="Update_time" type="text" readonly class="datepicker" style="width:20%;background-color:#ddd;" /></td>
+							</tr>
+						}
+						<tr>
+							<td width="8%">&nbsp</td>
+							<td><input type="submit" value="@(item == null ? "添加" : "更新")" />&nbsp;<input type="button" value="取消" /></td>
+						</tr>
+					</table>
+				</div>
+			</form>
+
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+	(function () {
+		top.edit_callback = function (rt) {
+			if (rt.success) return top.mainViewNav.goto('./?' + new Date().getTime());
+			alert(rt.message);
+		};
+
+		var form = $('#form_add')[0];
+		var item = null;
+		@if (item != null) {
+			<text>
+			item = @Html.Json(item);
+			fillForm(form, item);
+			</text>
+		}
+		top.mainViewInit();
+	})();
+</script>
