@@ -9,6 +9,12 @@ using es.Model;
 
 public static partial class esExtensionMethods {
 
+	public static string ToJson(this V_testdddInfo item) => string.Concat(item);
+	public static string ToJson(this V_testdddInfo[] items) => GetJson(items);
+	public static string ToJson(this IEnumerable<V_testdddInfo> items) => GetJson(items);
+	public static IDictionary[] ToBson(this V_testdddInfo[] items, Func<V_testdddInfo, object> func = null) => GetBson(items, func);
+	public static IDictionary[] ToBson(this IEnumerable<V_testdddInfo> items, Func<V_testdddInfo, object> func = null) => GetBson(items, func);
+
 	public static string ToJson(this CategoryInfo item) => string.Concat(item);
 	public static string ToJson(this CategoryInfo[] items) => GetJson(items);
 	public static string ToJson(this IEnumerable<CategoryInfo> items) => GetJson(items);
@@ -37,12 +43,26 @@ public static partial class esExtensionMethods {
 	public static IDictionary[] ToBson(this IEnumerable<Goods_tagInfo> items, Func<Goods_tagInfo, object> func = null) => GetBson(items, func);
 	public static es.DAL.Goods_tag.SqlUpdateBuild UpdateDiy(this List<Goods_tagInfo> items) => es.BLL.Goods_tag.UpdateDiy(items);
 
+	public static string ToJson(this Sys_AreaInfo item) => string.Concat(item);
+	public static string ToJson(this Sys_AreaInfo[] items) => GetJson(items);
+	public static string ToJson(this IEnumerable<Sys_AreaInfo> items) => GetJson(items);
+	public static IDictionary[] ToBson(this Sys_AreaInfo[] items, Func<Sys_AreaInfo, object> func = null) => GetBson(items, func);
+	public static IDictionary[] ToBson(this IEnumerable<Sys_AreaInfo> items, Func<Sys_AreaInfo, object> func = null) => GetBson(items, func);
+	public static es.DAL.Sys_Area.SqlUpdateBuild UpdateDiy(this List<Sys_AreaInfo> items) => es.BLL.Sys_Area.UpdateDiy(items);
+
 	public static string ToJson(this TagInfo item) => string.Concat(item);
 	public static string ToJson(this TagInfo[] items) => GetJson(items);
 	public static string ToJson(this IEnumerable<TagInfo> items) => GetJson(items);
 	public static IDictionary[] ToBson(this TagInfo[] items, Func<TagInfo, object> func = null) => GetBson(items, func);
 	public static IDictionary[] ToBson(this IEnumerable<TagInfo> items, Func<TagInfo, object> func = null) => GetBson(items, func);
 	public static es.DAL.Tag.SqlUpdateBuild UpdateDiy(this List<TagInfo> items) => es.BLL.Tag.UpdateDiy(items);
+
+	public static string ToJson(this TestInfo item) => string.Concat(item);
+	public static string ToJson(this TestInfo[] items) => GetJson(items);
+	public static string ToJson(this IEnumerable<TestInfo> items) => GetJson(items);
+	public static IDictionary[] ToBson(this TestInfo[] items, Func<TestInfo, object> func = null) => GetBson(items, func);
+	public static IDictionary[] ToBson(this IEnumerable<TestInfo> items, Func<TestInfo, object> func = null) => GetBson(items, func);
+	public static es.DAL.Test.SqlUpdateBuild UpdateDiy(this List<TestInfo> items) => es.BLL.Test.UpdateDiy(items);
 
 	public static string GetJson(IEnumerable items) {
 		StringBuilder sb = new StringBuilder();

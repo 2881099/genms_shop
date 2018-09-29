@@ -92,6 +92,7 @@ namespace es.Model {
 			get { return _Id; }
 			set { _Id = value; }
 		}
+
 		/// <summary>
 		/// 产品id
 		/// </summary>
@@ -102,6 +103,7 @@ namespace es.Model {
 				_Goods_id = value;
 			}
 		}
+
 		public GoodsInfo Obj_goods {
 			get {
 				if (_obj_goods == null && _Goods_id != null) _obj_goods = es.BLL.Goods.GetItem(_Goods_id.Value);
@@ -109,6 +111,7 @@ namespace es.Model {
 			}
 			internal set { _obj_goods = value; }
 		}
+
 		/// <summary>
 		/// 评论内容
 		/// </summary>
@@ -116,6 +119,7 @@ namespace es.Model {
 			get { return _Content; }
 			set { _Content = value; }
 		}
+
 		/// <summary>
 		/// 创建时间
 		/// </summary>
@@ -123,6 +127,7 @@ namespace es.Model {
 			get { return _Create_time; }
 			set { _Create_time = value; }
 		}
+
 		/// <summary>
 		/// 评论者
 		/// </summary>
@@ -130,6 +135,7 @@ namespace es.Model {
 			get { return _Nickname; }
 			set { _Nickname = value; }
 		}
+
 		/// <summary>
 		/// 更新时间
 		/// </summary>
@@ -137,6 +143,7 @@ namespace es.Model {
 			get { return _Update_time; }
 			set { _Update_time = value; }
 		}
+
 		#endregion
 
 		public es.DAL.Comment.SqlUpdateBuild UpdateDiy => _Id == null ? null : BLL.Comment.UpdateDiy(new List<CommentInfo> { this });

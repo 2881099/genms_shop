@@ -82,6 +82,7 @@ namespace es.Model {
 			get { return _Id; }
 			set { _Id = value; }
 		}
+
 		/// <summary>
 		/// 父级分类id
 		/// </summary>
@@ -92,6 +93,7 @@ namespace es.Model {
 				_Parent_id = value;
 			}
 		}
+
 		public CategoryInfo Obj_category {
 			get {
 				if (_obj_category == null && _Parent_id != null) _obj_category = es.BLL.Category.GetItem(_Parent_id.Value);
@@ -99,6 +101,7 @@ namespace es.Model {
 			}
 			internal set { _obj_category = value; }
 		}
+
 		/// <summary>
 		/// 创建时间
 		/// </summary>
@@ -106,6 +109,7 @@ namespace es.Model {
 			get { return _Create_time; }
 			set { _Create_time = value; }
 		}
+
 		/// <summary>
 		/// 分类名称
 		/// </summary>
@@ -113,6 +117,7 @@ namespace es.Model {
 			get { return _Name; }
 			set { _Name = value; }
 		}
+
 		private List<CategoryInfo> _obj_categorys;
 		public List<CategoryInfo> Obj_categorys => _obj_categorys ?? (_obj_categorys = BLL.Category.SelectByParent_id(_Id).Limit(500).ToList());
 		private List<GoodsInfo> _obj_goodss;

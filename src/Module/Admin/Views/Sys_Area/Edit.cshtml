@@ -1,0 +1,110 @@
+﻿@{
+	Layout = "";
+	Sys_AreaInfo item = ViewBag.item;
+}
+
+<div class="box">
+	<div class="box-header with-border">
+		<h3 class="box-title" id="box-title"></h3>
+	</div>
+	<div class="box-body">
+		<div class="table-responsive">
+			<form id="form_add" method="post">
+				@Html.AntiForgeryToken()
+				<input type="hidden" name="__callback" value="edit_callback" />
+				<div>
+					<table cellspacing="0" rules="all" class="table table-bordered table-hover" border="1" style="border-collapse:collapse;">
+						<tr>
+							<td>主键</td>
+							<td><input name="F_Id" type="text" class="datepicker" style="width:60%;" /></td>
+						</tr>
+						<tr>
+							<td>创建日期</td>
+							<td><input name="F_CreatorTime" type="text" class="datepicker" /></td>
+						</tr>
+						<tr>
+							<td>创建用户主键</td>
+							<td><input name="F_CreatorUserId" type="text" class="datepicker" style="width:60%;" /></td>
+						</tr>
+						<tr>
+							<td>删除标志</td>
+							<td id="F_DeleteMark_td"><input name="F_DeleteMark" type="checkbox" value="true" /></td>
+						</tr>
+						<tr>
+							<td>删除时间</td>
+							<td><input name="F_DeleteTime" type="text" class="datepicker" /></td>
+						</tr>
+						<tr>
+							<td>删除用户</td>
+							<td><input name="F_DeleteUserId" type="text" class="datepicker" style="width:60%;" /></td>
+						</tr>
+						<tr>
+							<td>描述</td>
+							<td><input name="F_Description" type="text" class="datepicker" style="width:60%;" /></td>
+						</tr>
+						<tr>
+							<td>有效标志</td>
+							<td id="F_EnabledMark_td"><input name="F_EnabledMark" type="checkbox" value="true" /></td>
+						</tr>
+						<tr>
+							<td>编码</td>
+							<td><input name="F_EnCode" type="text" class="datepicker" style="width:60%;" /></td>
+						</tr>
+						<tr>
+							<td>名称</td>
+							<td><input name="F_FullName" type="text" class="datepicker" style="width:60%;" /></td>
+						</tr>
+						<tr>
+							<td>最后修改时间</td>
+							<td><input name="F_LastModifyTime" type="text" class="datepicker" /></td>
+						</tr>
+						<tr>
+							<td>最后修改用户</td>
+							<td><input name="F_LastModifyUserId" type="text" class="datepicker" style="width:60%;" /></td>
+						</tr>
+						<tr>
+							<td>层次</td>
+							<td><input name="F_Layers" type="text" class="form-control" data-inputmask="'mask': '9', 'repeat': 6, 'greedy': false" data-mask style="width:200px;" /></td>
+						</tr>
+						<tr>
+							<td>父级</td>
+							<td><input name="F_ParentId" type="text" class="datepicker" style="width:60%;" /></td>
+						</tr>
+						<tr>
+							<td>简拼</td>
+							<td><input name="F_SimpleSpelling" type="text" class="datepicker" style="width:60%;" /></td>
+						</tr>
+						<tr>
+							<td>排序码</td>
+							<td><input name="F_SortCode" type="text" class="form-control" data-inputmask="'mask': '9', 'repeat': 6, 'greedy': false" data-mask style="width:200px;" /></td>
+						</tr>
+						<tr>
+							<td width="8%">&nbsp</td>
+							<td><input type="submit" value="@(item == null ? "添加" : "更新")" />&nbsp;<input type="button" value="取消" /></td>
+						</tr>
+					</table>
+				</div>
+			</form>
+
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+	(function () {
+		top.edit_callback = function (rt) {
+			if (rt.success) return top.mainViewNav.goto('./?' + new Date().getTime());
+			alert(rt.message);
+		};
+
+		var form = $('#form_add')[0];
+		var item = null;
+		@if (item != null) {
+			<text>
+			item = @Html.Json(item);
+			fillForm(form, item);
+			</text>
+		}
+		top.mainViewInit();
+	})();
+</script>

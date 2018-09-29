@@ -76,6 +76,7 @@ namespace es.Model {
 				_Goods_id = value;
 			}
 		}
+
 		public GoodsInfo Obj_goods {
 			get {
 				if (_obj_goods == null && _Goods_id != null) _obj_goods = es.BLL.Goods.GetItem(_Goods_id.Value);
@@ -83,6 +84,7 @@ namespace es.Model {
 			}
 			internal set { _obj_goods = value; }
 		}
+
 		/// <summary>
 		/// 标签id
 		/// </summary>
@@ -93,6 +95,7 @@ namespace es.Model {
 				_Tag_id = value;
 			}
 		}
+
 		public TagInfo Obj_tag {
 			get {
 				if (_obj_tag == null && _Tag_id != null) _obj_tag = es.BLL.Tag.GetItem(_Tag_id.Value);
@@ -100,6 +103,7 @@ namespace es.Model {
 			}
 			internal set { _obj_tag = value; }
 		}
+
 		#endregion
 
 		public es.DAL.Goods_tag.SqlUpdateBuild UpdateDiy => _Goods_id == null || _Tag_id == null ? null : BLL.Goods_tag.UpdateDiy(new List<Goods_tagInfo> { this });

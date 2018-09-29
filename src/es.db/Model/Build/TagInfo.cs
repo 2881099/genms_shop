@@ -71,6 +71,7 @@ namespace es.Model {
 			get { return _Id; }
 			set { _Id = value; }
 		}
+
 		/// <summary>
 		/// 标签名
 		/// </summary>
@@ -78,6 +79,7 @@ namespace es.Model {
 			get { return _Name; }
 			set { _Name = value; }
 		}
+
 		private List<GoodsInfo> _obj_goodss;
 		public List<GoodsInfo> Obj_goodss => _obj_goodss ?? (_obj_goodss = BLL.Goods.SelectByTag_id(_Id.Value).ToList());
 		#endregion

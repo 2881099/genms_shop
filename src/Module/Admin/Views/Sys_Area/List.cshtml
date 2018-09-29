@@ -1,0 +1,93 @@
+﻿@{ 
+	Layout = "";
+}
+
+<div class="box">
+	<div class="box-header with-border">
+		<h3 id="box-title" class="box-title"></h3>
+		<span class="form-group mr15"></span><a href="./add" data-toggle="modal" class="btn btn-success pull-right">添加</a>
+	</div>
+	<div class="box-body">
+		<div class="table-responsive">
+			<form id="form_search">
+				<div id="div_filter"></div>
+			</form>
+			<form id="form_list" action="./del" method="post">
+				@Html.AntiForgeryToken()
+				<input type="hidden" name="__callback" value="del_callback"/>
+				<table id="GridView1" cellspacing="0" rules="all" border="1" style="border-collapse:collapse;" class="table table-bordered table-hover">
+					<tr>
+						<th scope="col" style="width:2%;"><input type="checkbox" onclick="$('#GridView1 tbody tr').each(function (idx, el) { var chk = $(el).find('td:first input[type=\'checkbox\']')[0]; if (chk) chk.checked = !chk.checked; });" /></th>
+						<th scope="col">主键</th>
+						<th scope="col">创建日期</th>
+						<th scope="col">创建用户主键</th>
+						<th scope="col">删除标志</th>
+						<th scope="col">删除时间</th>
+						<th scope="col">删除用户</th>
+						<th scope="col">描述</th>
+						<th scope="col">有效标志</th>
+						<th scope="col">编码</th>
+						<th scope="col">名称</th>
+						<th scope="col">最后修改时间</th>
+						<th scope="col">最后修改用户</th>
+						<th scope="col">层次</th>
+						<th scope="col">父级</th>
+						<th scope="col">简拼</th>
+						<th scope="col">排序码</th>
+						<th scope="col" style="width:5%;">&nbsp;</th>
+					</tr>
+					<tbody>
+						@foreach(Sys_AreaInfo item in ViewBag.items) {
+							<tr>
+								<td><input type="checkbox" id="id" name="id" value="@item.F_Id" /></td>
+								<td>@item.F_Id</td>
+								<td>@item.F_CreatorTime</td>
+								<td>@item.F_CreatorUserId</td>
+								<td>@item.F_DeleteMark</td>
+								<td>@item.F_DeleteTime</td>
+								<td>@item.F_DeleteUserId</td>
+								<td>@item.F_Description</td>
+								<td>@item.F_EnabledMark</td>
+								<td>@item.F_EnCode</td>
+								<td>@item.F_FullName</td>
+								<td>@item.F_LastModifyTime</td>
+								<td>@item.F_LastModifyUserId</td>
+								<td>@item.F_Layers</td>
+								<td>@item.F_ParentId</td>
+								<td>@item.F_SimpleSpelling</td>
+								<td>@item.F_SortCode</td>
+								<td><a href="./edit?F_Id=@item.F_Id">修改</a></td>
+							</tr>
+						}
+					</tbody>
+				</table>
+			</form>
+			<a id="btn_delete_sel" href="#" class="btn btn-danger pull-right">删除选中项</a>
+			<div id="kkpager"></div>
+		</div>
+	</div>
+</div>
+
+@{
+}
+<script type="text/javascript">
+	(function () {
+		top.del_callback = function(rt) {
+			if (rt.success) return top.mainViewNav.goto('./?' + new Date().getTime());
+			alert(rt.message);
+		};
+
+		var qs = _clone(top.mainViewNav.query);
+		var page = cint(qs.page, 1);
+		delete qs.page;
+		$('#kkpager').html(cms2Pager(@ViewBag.count, page, 20, qs, 'page'));
+		var fqs = _clone(top.mainViewNav.query);
+		delete fqs.page;
+		var fsc = [
+			null
+		];
+		fsc.pop();
+		cms2Filter(fsc, fqs);
+		top.mainViewInit();
+	})();
+</script>

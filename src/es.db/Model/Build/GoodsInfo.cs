@@ -102,6 +102,7 @@ namespace es.Model {
 			get { return _Id; }
 			set { _Id = value; }
 		}
+
 		/// <summary>
 		/// 分类id
 		/// </summary>
@@ -112,6 +113,7 @@ namespace es.Model {
 				_Category_id = value;
 			}
 		}
+
 		public CategoryInfo Obj_category {
 			get {
 				if (_obj_category == null && _Category_id != null) _obj_category = es.BLL.Category.GetItem(_Category_id.Value);
@@ -119,6 +121,7 @@ namespace es.Model {
 			}
 			internal set { _obj_category = value; }
 		}
+
 		/// <summary>
 		/// 产品介绍
 		/// </summary>
@@ -126,6 +129,7 @@ namespace es.Model {
 			get { return _Content; }
 			set { _Content = value; }
 		}
+
 		/// <summary>
 		/// 创建时间
 		/// </summary>
@@ -133,6 +137,7 @@ namespace es.Model {
 			get { return _Create_time; }
 			set { _Create_time = value; }
 		}
+
 		/// <summary>
 		/// 图片
 		/// </summary>
@@ -140,6 +145,7 @@ namespace es.Model {
 			get { return _Imgs; }
 			set { _Imgs = value; }
 		}
+
 		/// <summary>
 		/// 库存
 		/// </summary>
@@ -147,6 +153,7 @@ namespace es.Model {
 			get { return _Stock; }
 			set { _Stock = value; }
 		}
+
 		/// <summary>
 		/// 标题
 		/// </summary>
@@ -154,6 +161,7 @@ namespace es.Model {
 			get { return _Title; }
 			set { _Title = value; }
 		}
+
 		/// <summary>
 		/// 更新时间
 		/// </summary>
@@ -161,6 +169,7 @@ namespace es.Model {
 			get { return _Update_time; }
 			set { _Update_time = value; }
 		}
+
 		private List<CommentInfo> _obj_comments;
 		public List<CommentInfo> Obj_comments => _obj_comments ?? (_obj_comments = BLL.Comment.SelectByGoods_id(_Id).Limit(500).ToList());
 		private List<TagInfo> _obj_tags;
