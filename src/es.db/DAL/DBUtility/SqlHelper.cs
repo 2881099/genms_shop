@@ -22,16 +22,12 @@ namespace es.DAL {
 	/// </summary>
 	public abstract partial class SqlHelper {
 		internal static Executer Instance { get; private set; }
-		public static ConnectionPool Pool => Instance.MasterPool;
-		public static List<ConnectionPool> SlavePools => Instance.SlavePools;
+		public static SqlConnectionPool Pool => Instance.MasterPool;
+		public static List<SqlConnectionPool> SlavePools => Instance.SlavePools;
 		/// <summary>
 		/// 是否跟踪记录SQL执行性能日志
 		/// </summary>
 		public static bool IsTracePerformance { get => Instance.IsTracePerformance; set => Instance.IsTracePerformance = value; }
-		/// <summary>
-		/// 从数据库发生故障后，检查可用性间隔时间(单位：秒)
-		/// </summary>
-		public static int SlaveCheckAvailableInterval { get => Instance.SlaveCheckAvailableInterval; set => Instance.SlaveCheckAvailableInterval = value; }
 		public static void Initialization(IDistributedCache cache, IConfiguration cacheStrategy, string masterConnectionString, string[] slaveConnectionString, ILogger log) {
 			CacheStrategy = cacheStrategy;
 			Instance = new Executer(cache, masterConnectionString, slaveConnectionString, log);
