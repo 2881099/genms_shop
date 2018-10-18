@@ -29,10 +29,8 @@ namespace es.WebHost {
 				return st;
 			};
 			//去掉以下注释可开启 RedisHelper 静态类
-			//RedisHelper.Initialization(
-			//	csredis: new CSRedis.CSRedisClient(Configuration["ConnectionStrings:redis1"]), //单redis节点模式
-			//	serialize: value => Newtonsoft.Json.JsonConvert.SerializeObject(value),
-			//	deserialize: (data, type) => Newtonsoft.Json.JsonConvert.DeserializeObject(data, type));
+			//var csredis = new CSRedis.CSRedisClient(Configuration["ConnectionStrings:redis1"]); //单redis节点模式
+			//RedisHelper.Initialization(csredis);
 		}
 
 		public static IList<ModuleInfo> Modules = new List<ModuleInfo>();

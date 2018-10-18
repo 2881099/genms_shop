@@ -31,21 +31,13 @@ namespace es.Module.Admin.Controllers {
 		}
 		[HttpGet(@"connection/redis")]
 		public object Get_connection_redis() {
-			var ret = new Hashtable();
-			foreach(var pool in RedisHelper.ClusterNodes) {
-				List<Hashtable> list = new List<Hashtable>();
-				foreach (var conn in pool.Value.AllConnections) {
-					list.Add(new Hashtable() {
-						{ "最后活动", conn.LastActive },
-						{ "获取次数", conn.UseSum }
-					});
-				}
-				ret.Add(pool.Key, new {
-					FreeConnections = pool.Value.FreeConnections.Count,
-					AllConnections = pool.Value.AllConnections.Count,
-					GetConnectionQueue = pool.Value.GetConnectionQueue.Count,
-					GetConnectionAsyncQueue = pool.Value.GetConnectionAsyncQueue.Count,
-					List = list
+			var ret = new List<object>();
+			foreach(var pool in RedisHelper.Nodes.Values) {
+				ret.Add(new {
+					pool.Policy.Name,
+					pool.IsAvailable,
+					pool.UnavailableTime,
+					pool.StatisticsFullily
 				});
 			}
 			return ret;
