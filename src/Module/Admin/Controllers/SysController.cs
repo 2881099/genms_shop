@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -13,34 +14,30 @@ namespace es.Module.Admin.Controllers {
 	[Obsolete]
 	public class SysController : Controller {
 		[HttpGet(@"connection")]
-		public object Get_connection() {
+		public ContentResult Get_connection() {
+			var sb = new StringBuilder();
 			var pools = new List<System.Data.SqlClient.SqlConnectionPool>();
 			pools.Add(SqlHelper.Pool);
 			pools.AddRange(SqlHelper.SlavePools);
-			var ret = new List<object>();
 			for (var a = 0; a < pools.Count; a++) {
 				var pool = pools[a];
-				ret.Add(new {
-					pool.Policy.Name,
-					pool.IsAvailable,
-					pool.UnavailableTime,
-					pool.StatisticsFullily
-				});
+				sb.AppendLine($@"【{pool.Policy.Name}】　　状态：{(pool.IsAvailable ? "正常" : $"[{pool.UnavailableTime}] {pool.UnavailableException.Message}")}
+-------------------------------------------------------------------------------------------------------
+{pool.StatisticsFullily}
+");
 			}
-			return ret;
+			return new ContentResult { ContentType = "text/plan;charset=utf-8", Content = sb.ToString() };
 		}
 		[HttpGet(@"connection/redis")]
-		public object Get_connection_redis() {
-			var ret = new List<object>();
+		public ContentResult Get_connection_redis() {
+			var sb = new StringBuilder();
 			foreach(var pool in RedisHelper.Nodes.Values) {
-				ret.Add(new {
-					pool.Policy.Name,
-					pool.IsAvailable,
-					pool.UnavailableTime,
-					pool.StatisticsFullily
-				});
+				sb.AppendLine($@"【{pool.Policy.Name}】　　状态：{(pool.IsAvailable ? "正常" : $"[{pool.UnavailableTime}] {pool.UnavailableException.Message}")}
+-------------------------------------------------------------------------------------------------------
+Slots：{RedisHelper.Instance.SlotCache.Count}/16384, {pool.StatisticsFullily}
+");
 			}
-			return ret;
+			return new ContentResult { ContentType = "text/plan;charset=utf-8", Content = sb.ToString() };
 		}
 
 		[HttpGet(@"init_sysdir")]
