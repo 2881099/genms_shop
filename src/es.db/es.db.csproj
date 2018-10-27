@@ -4,7 +4,7 @@
 		<AssemblyName>es.db</AssemblyName>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="dng.Mssql" Version="1.1.21" />
-		<PackageReference Include="CSRedisCore" Version="3.0.5" />
+		<PackageReference Include="dng.Mssql" Version="1.1.22" />
+		<PackageReference Include="CSRedisCore" Version="3.0.13" />
 	</ItemGroup>
 </Project>
