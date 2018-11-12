@@ -2,7 +2,8 @@
 	<PropertyGroup>
 		<TargetFramework>netcoreapp2.1</TargetFramework>
 		<WarningLevel>3</WarningLevel>
-		<PostBuildEvent>gulp --gulpfile ../../../gulpfile.js copy-module</PostBuildEvent>
+		<ServerGarbageCollection>false</ServerGarbageCollection>
+		<MvcRazorCompileOnPublish>false</MvcRazorCompileOnPublish>
 	</PropertyGroup>
 	<ItemGroup>
 		<Folder Include="wwwroot\" />
@@ -24,4 +25,7 @@
 	<ItemGroup>
 		<PackageReference Include="Microsoft.AspNetCore.App" />
 	</ItemGroup>
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Exec Command="gulp --gulpfile gulpfile.js copy-module" />
+	</Target>
 </Project>
