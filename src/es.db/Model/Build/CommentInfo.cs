@@ -95,6 +95,10 @@ namespace es.Model {
 
 		/// <summary>
 		/// 产品id
+		/// 
+		/// 测试换行注释
+		/// 
+		/// \r\n
 		/// </summary>
 		[JsonProperty] public int? Goods_id {
 			get { return _Goods_id; }
