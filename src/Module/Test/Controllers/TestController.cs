@@ -15,7 +15,7 @@ using Newtonsoft.Json.Linq;
 using es.BLL;
 using es.Model;
 
-namespace es.Module.Admin.Controllers {
+namespace es.Module.Test.Controllers {
 	[Route("[controller]")]
 	public class TestController : BaseController {
 		public TestController(ILogger<TestController> logger) : base(logger) { }

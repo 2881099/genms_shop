@@ -33,7 +33,7 @@ namespace es.WebHost {
 			//RedisHelper.Initialization(csredis);
 		}
 
-		public static IList<ModuleInfo> Modules = new List<ModuleInfo>();
+		public static List<ModuleInfo> Modules = new List<ModuleInfo>();
 		public IConfiguration Configuration { get; }
 		public IHostingEnvironment env { get; }
 
@@ -50,7 +50,7 @@ namespace es.WebHost {
 			});
 			services.AddCors(options => options.AddPolicy("cors_all", builder => builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin()));
 			services.AddCustomizedMvc(Modules);
-			services.Configure<RazorViewEngineOptions>(options => { options.ViewLocationExpanders.Add(new ModuleViewLocationExpander()); });
+			Modules.ForEach(module => module.Initializer?.ConfigureServices(services, env));
 
 			if (env.IsDevelopment())
 				services.AddCustomizedSwaggerGen();
@@ -73,8 +73,9 @@ namespace es.WebHost {
 
 			app.UseSession();
 			app.UseCors("cors_all");
-			app.UseCustomizedMvc(Modules);
+			app.UseMvc();
 			app.UseCustomizedStaticFiles(Modules);
+			Modules.ForEach(module => module.Initializer?.Configure(app, env, loggerFactory, lifetime));
 
 			if (env.IsDevelopment())
 				app.UseCustomizedSwagger(env);

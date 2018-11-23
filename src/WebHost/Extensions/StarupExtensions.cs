@@ -1,19 +1,21 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.CodeAnalysis;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Loader;
-using Newtonsoft.Json.Serialization;
-using Newtonsoft.Json;
 
 public static class StarupExtensions {
 	public static ConfigurationBuilder LoadInstalledModules(this ConfigurationBuilder build, IList<ModuleInfo> modules, IHostingEnvironment env) {
@@ -21,9 +23,14 @@ public static class StarupExtensions {
 		var moduleFolders = moduleRootFolder.GetDirectories();
 
 		foreach (var moduleFolder in moduleFolders) {
-			Assembly assembly;
+			Assembly assembly = null;
+			IModuleInitializer moduleInitializer = null;
 			try {
 				assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(Path.Combine(moduleFolder.FullName, moduleFolder.Name + ".dll"));
+				var moduleInitializerType = assembly.GetTypes().FirstOrDefault(x => typeof(IModuleInitializer).IsAssignableFrom(x));
+				if ((moduleInitializerType != null) && (moduleInitializerType != typeof(IModuleInitializer))) {
+					moduleInitializer = (IModuleInitializer)Activator.CreateInstance(moduleInitializerType);
+				}
 			} catch (FileLoadException) {
 				throw;
 			}
@@ -31,6 +38,7 @@ public static class StarupExtensions {
 				modules.Add(new ModuleInfo {
 					Name = moduleFolder.Name,
 					Assembly = assembly,
+					Initializer = moduleInitializer,
 					Path = moduleFolder.FullName
 				});
 		}
@@ -59,8 +67,8 @@ public static class StarupExtensions {
 	public static IServiceCollection AddCustomizedMvc(this IServiceCollection services, IList<ModuleInfo> modules) {
 		var mvcBuilder = services.AddMvc().AddJsonOptions(a => {
 				a.SerializerSettings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
-				a.SerializerSettings.DateFormatHandling = Newtonsoft.Json.DateFormatHandling.IsoDateFormat;
-				a.SerializerSettings.DateTimeZoneHandling = Newtonsoft.Json.DateTimeZoneHandling.Utc;
+				a.SerializerSettings.DateFormatHandling = DateFormatHandling.IsoDateFormat;
+				a.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Utc;
 			})
 			.AddRazorOptions(o => {
 				foreach (var module in modules) {
@@ -71,23 +79,14 @@ public static class StarupExtensions {
 			.AddViewLocalization()
 			.AddDataAnnotationsLocalization();
 
-		foreach (var module in modules)
+		foreach (var module in modules) {
 			mvcBuilder.AddApplicationPart(module.Assembly);
+		}
+		services.Configure<RazorViewEngineOptions>(options => { options.ViewLocationExpanders.Add(new ModuleViewLocationExpander()); });
 
 		return services;
 	}
 
-	public static IApplicationBuilder UseCustomizedMvc(this IApplicationBuilder app, IList<ModuleInfo> modules) {
-		foreach (var module in modules) {
-			var moduleInitializerType =
-				module.Assembly.GetTypes().FirstOrDefault(x => typeof(IModuleInitializer).IsAssignableFrom(x));
-			if ((moduleInitializerType != null) && (moduleInitializerType != typeof(IModuleInitializer))) {
-				var moduleInitializer = (IModuleInitializer)Activator.CreateInstance(moduleInitializerType);
-				moduleInitializer.Init(app);
-			}
-		}
-		return app.UseMvc();
-	}
 	public static IApplicationBuilder UseCustomizedStaticFiles(this IApplicationBuilder app, IList<ModuleInfo> modules) {
 		app.UseDefaultFiles();
 		app.UseStaticFiles(new StaticFileOptions() {

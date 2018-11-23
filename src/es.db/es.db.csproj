@@ -5,6 +5,6 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="dng.Mssql" Version="1.2.2" />
-		<PackageReference Include="CSRedisCore" Version="3.0.21" />
+		<PackageReference Include="CSRedisCore" Version="3.0.25" />
 	</ItemGroup>
 </Project>
