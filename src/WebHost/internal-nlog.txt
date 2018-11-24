@@ -70,3 +70,9 @@
 2018-11-23 18:33:22.3272 Error Error parsing layout document-uri will be ignored. Exception: System.ArgumentException: LayoutRenderer cannot be found: 'document-uri'
    at NLog.Config.Factory`2.CreateInstance(String name)
    at NLog.Layouts.LayoutParser.GetLayoutRenderer(ConfigurationItemFactory configurationItemFactory, String name)
+2018-11-24 09:53:39.8688 Error Error parsing layout document-uri will be ignored. Exception: System.ArgumentException: LayoutRenderer cannot be found: 'document-uri'
+   at NLog.Config.Factory`2.CreateInstance(String name)
+   at NLog.Layouts.LayoutParser.GetLayoutRenderer(ConfigurationItemFactory configurationItemFactory, String name)
+2018-11-24 09:53:39.9300 Error Error parsing layout document-uri will be ignored. Exception: System.ArgumentException: LayoutRenderer cannot be found: 'document-uri'
+   at NLog.Config.Factory`2.CreateInstance(String name)
+   at NLog.Layouts.LayoutParser.GetLayoutRenderer(ConfigurationItemFactory configurationItemFactory, String name)
