@@ -57,10 +57,12 @@ namespace es.DAL {
 			return item;
 		}
 
-		public SqlUpdateBuild Update(TestInfo item) {
-			return new SqlUpdateBuild(new List<TestInfo> { item }, false)
-				.SetId(item.Id)
-				.SetF_ShortCode(item.F_ShortCode);
+		public SqlUpdateBuild Update(TestInfo item, string[] ignoreFields) {
+			var sub = new SqlUpdateBuild(new List<TestInfo> { item }, false);
+			var ignore = ignoreFields?.ToDictionary(a => a, StringComparer.CurrentCultureIgnoreCase) ?? new Dictionary<string, string>();
+			if (ignore.ContainsKey("id") == false) sub.SetId(item.Id);
+			if (ignore.ContainsKey("F_ShortCode") == false) sub.SetF_ShortCode(item.F_ShortCode);
+			return sub;
 		}
 		#region class SqlUpdateBuild
 		public partial class SqlUpdateBuild {

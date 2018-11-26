@@ -28,7 +28,21 @@ namespace es.BLL {
 			return item;
 		}
 
-		public static int Update(TagInfo item) => dal.Update(item).ExecuteNonQuery();
+		#region enum _
+		public enum _ {
+			/// <summary>
+			/// 标签id（自增）
+			/// </summary>
+			Id = 1, 
+			/// <summary>
+			/// 标签名
+			/// </summary>
+			Name
+		}
+		#endregion
+
+		public static int Update(TagInfo item, _ ignore1 = 0, _ ignore2 = 0, _ ignore3 = 0) => Update(item, new[] { ignore1, ignore2, ignore3 });
+		public static int Update(TagInfo item, _[] ignore) => dal.Update(item, ignore?.Where(a => a > 0).Select(a => Enum.GetName(typeof(_), a)).ToArray()).ExecuteNonQuery();
 		public static es.DAL.Tag.SqlUpdateBuild UpdateDiy(int Id) => new es.DAL.Tag.SqlUpdateBuild(new List<TagInfo> { new TagInfo { Id = Id } }, false);
 		public static es.DAL.Tag.SqlUpdateBuild UpdateDiy(List<TagInfo> dataSource) => new es.DAL.Tag.SqlUpdateBuild(dataSource, true);
 		public static es.DAL.Tag.SqlUpdateBuild UpdateDiyDangerous => new es.DAL.Tag.SqlUpdateBuild();
@@ -63,10 +77,10 @@ namespace es.BLL {
 		public static TagInfo GetItem(int Id) => SqlHelper.CacheShell(string.Concat("es_BLL_Tag_", Id), itemCacheTimeout, () => Select.WhereId(Id).ToOne());
 
 		public static List<TagInfo> GetItems() => Select.ToList();
-		public static TagSelectBuild Select => new TagSelectBuild(dal);
-		public static TagSelectBuild SelectAs(string alias = "a") => Select.As(alias);
-		public static TagSelectBuild SelectByGoods(params GoodsInfo[] goodss) => Select.WhereGoods(goodss);
-		public static TagSelectBuild SelectByGoods_id(params int[] goods_ids) => Select.WhereGoods_id(goods_ids);
+		public static SelectBuild Select => new SelectBuild(dal);
+		public static SelectBuild SelectAs(string alias = "a") => Select.As(alias);
+		public static SelectBuild SelectByGoods(params GoodsInfo[] goodss) => Select.WhereGoods(goodss);
+		public static SelectBuild SelectByGoods_id(params int[] goods_ids) => Select.WhereGoods_id(goods_ids);
 
 		#region async
 		async public static Task<TagInfo> DeleteAsync(int Id) {
@@ -75,7 +89,8 @@ namespace es.BLL {
 			return item;
 		}
 		async public static Task<TagInfo> GetItemAsync(int Id) => await SqlHelper.CacheShellAsync(string.Concat("es_BLL_Tag_", Id), itemCacheTimeout, () => Select.WhereId(Id).ToOneAsync());
-		async public static Task<int> UpdateAsync(TagInfo item) => await dal.Update(item).ExecuteNonQueryAsync();
+		public static Task<int> UpdateAsync(TagInfo item, _ ignore1 = 0, _ ignore2 = 0, _ ignore3 = 0) => UpdateAsync(item, new[] { ignore1, ignore2, ignore3 });
+		public static Task<int> UpdateAsync(TagInfo item, _[] ignore) => dal.Update(item, ignore?.Where(a => a > 0).Select(a => Enum.GetName(typeof(_), a)).ToArray()).ExecuteNonQueryAsync();
 
 		public static Task<TagInfo> InsertAsync(string Name) {
 			return InsertAsync(new TagInfo {
@@ -91,7 +106,7 @@ namespace es.BLL {
 			if (itemCacheTimeout > 0) await RemoveCacheAsync(newitems);
 			return newitems;
 		}
-		async internal static Task RemoveCacheAsync(TagInfo item) => await RemoveCacheAsync(item == null ? null : new [] { item });
+		internal static Task RemoveCacheAsync(TagInfo item) => RemoveCacheAsync(item == null ? null : new [] { item });
 		async internal static Task RemoveCacheAsync(IEnumerable<TagInfo> items) {
 			if (itemCacheTimeout <= 0 || items == null || items.Any() == false) return;
 			var keys = new string[items.Count() * 1];
@@ -104,27 +119,31 @@ namespace es.BLL {
 
 		public static Task<List<TagInfo>> GetItemsAsync() => Select.ToListAsync();
 		#endregion
-	}
-	public partial class TagSelectBuild : SelectBuild<TagInfo, TagSelectBuild> {
-		public TagSelectBuild WhereGoods(params GoodsInfo[] goodss) => WhereGoods(goodss?.ToArray(), null);
-		public TagSelectBuild WhereGoods_id(params int[] goods_ids) => WhereGoods_id(goods_ids?.ToArray(), null);
-		public TagSelectBuild WhereGoods(GoodsInfo[] goodss, Action<Goods_tagSelectBuild> subCondition) => WhereGoods_id(goodss?.Where<GoodsInfo>(a => a != null).Select<GoodsInfo, int>(a => a.Id.Value).ToArray(), subCondition);
-		public TagSelectBuild WhereGoods_id(int[] goods_ids, Action<Goods_tagSelectBuild> subCondition) {
-			if (goods_ids == null || goods_ids.Length == 0) return this;
-			Goods_tagSelectBuild subConditionSelect = Goods_tag.Select.Where(string.Format(@"[tag_id] = a . [id] AND [goods_id] IN ('{0}')", string.Join("','", goods_ids.Select(a => string.Concat(a).Replace("'", "''")))));
-			if (subCondition != null) subCondition(subConditionSelect);
-			var subConditionSql = subConditionSelect.ToString(@"[tag_id]").Replace("] a \r\nWHERE (", "] WHERE (");
-			if (subCondition != null) subConditionSql = subConditionSql.Replace("a.[", "[dbo].[goods_tag].[");
-			return base.Where($"EXISTS({subConditionSql})");
+
+		public partial class SelectBuild : SelectBuild<TagInfo, SelectBuild> {
+			public SelectBuild WhereGoods(params GoodsInfo[] goodss) => WhereGoods(goodss?.ToArray(), null);
+			public SelectBuild WhereGoods_id(params int[] goods_ids) => WhereGoods_id(goods_ids?.ToArray(), null);
+			public SelectBuild WhereGoods(GoodsInfo[] goodss, Action<Goods_tag.SelectBuild> subCondition) => WhereGoods_id(goodss?.Where<GoodsInfo>(a => a != null).Select<GoodsInfo, int>(a => a.Id.Value).ToArray(), subCondition);
+			public SelectBuild WhereGoods_id(int[] goods_ids, Action<Goods_tag.SelectBuild> subCondition) {
+				if (goods_ids == null || goods_ids.Length == 0) return this;
+				Goods_tag.SelectBuild subConditionSelect = Goods_tag.Select.Where(string.Format(@"[tag_id] = a . [id] AND [goods_id] IN ('{0}')", string.Join("','", goods_ids.Select(a => string.Concat(a).Replace("'", "''")))));
+				subCondition?.Invoke(subConditionSelect);
+				var subConditionSql = subConditionSelect.ToString(@"[tag_id]").Replace("] a \r\nWHERE (", "] WHERE (");
+				if (subCondition != null) subConditionSql = subConditionSql.Replace("a.[", "[dbo].[goods_tag].[");
+				return base.Where($"EXISTS({subConditionSql})");
+			}
+			/// <summary>
+			/// 标签id（自增），多个参数等于 OR 查询
+			/// </summary>
+			public SelectBuild WhereId(params int[] Id) => this.Where1Or(@"a.[id] = {0}", Id);
+			public SelectBuild WhereIdRange(int? begin) => base.Where(@"a.[id] >= {0}", begin);
+			public SelectBuild WhereIdRange(int? begin, int? end) => end == null ? this.WhereIdRange(begin) : base.Where(@"a.[id] between {0} and {1}", begin, end);
+			/// <summary>
+			/// 标签名，多个参数等于 OR 查询
+			/// </summary>
+			public SelectBuild WhereName(params string[] Name) => this.Where1Or(@"a.[name] = {0}", Name);
+			public SelectBuild WhereNameLike(string pattern, bool isNotLike = false) => this.Where($@"a.[name] {(isNotLike ? "LIKE" : "NOT LIKE")} {{0}}", pattern);
+			public SelectBuild(IDAL dal) : base(dal, SqlHelper.Instance) { }
 		}
-		public TagSelectBuild WhereId(params int[] Id) => this.Where1Or(@"a.[id] = {0}", Id);
-		public TagSelectBuild WhereIdRange(int? begin) => base.Where(@"a.[id] >= {0}", begin);
-		public TagSelectBuild WhereIdRange(int? begin, int? end) => end == null ? this.WhereIdRange(begin) : base.Where(@"a.[id] between {0} and {1}", begin, end);
-		public TagSelectBuild WhereName(params string[] Name) => this.Where1Or(@"a.[name] = {0}", Name);
-		public TagSelectBuild WhereNameLike(string pattern, bool isNotLike = false) {
-			var opt = isNotLike ? "LIKE" : "NOT LIKE";
-			return this.Where($@"a.[name] {opt} {{0}}", pattern);
-		}
-		public TagSelectBuild(IDAL dal) : base(dal, SqlHelper.Instance) { }
 	}
 }

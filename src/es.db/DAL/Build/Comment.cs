@@ -75,13 +75,15 @@ namespace es.DAL {
 			return items;
 		}
 
-		public SqlUpdateBuild Update(CommentInfo item) {
-			return new SqlUpdateBuild(new List<CommentInfo> { item }, false)
-				.SetGoods_id(item.Goods_id)
-				.SetContent(item.Content)
-				.SetCreate_time(item.Create_time)
-				.SetNickname(item.Nickname)
-				.SetUpdate_time(item.Update_time);
+		public SqlUpdateBuild Update(CommentInfo item, string[] ignoreFields) {
+			var sub = new SqlUpdateBuild(new List<CommentInfo> { item }, false);
+			var ignore = ignoreFields?.ToDictionary(a => a, StringComparer.CurrentCultureIgnoreCase) ?? new Dictionary<string, string>();
+			if (ignore.ContainsKey("goods_id") == false) sub.SetGoods_id(item.Goods_id);
+			if (ignore.ContainsKey("content") == false) sub.SetContent(item.Content);
+			if (ignore.ContainsKey("create_time") == false) sub.SetCreate_time(item.Create_time);
+			if (ignore.ContainsKey("nickname") == false) sub.SetNickname(item.Nickname);
+			if (ignore.ContainsKey("update_time") == false) sub.SetUpdate_time(item.Update_time);
+			return sub;
 		}
 		#region class SqlUpdateBuild
 		public partial class SqlUpdateBuild {

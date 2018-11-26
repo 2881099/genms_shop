@@ -112,6 +112,10 @@ namespace es.Model {
 
 		/// <summary>
 		/// 分类名称
+		/// 
+		/// 换行测试
+		/// 
+		/// xxxx
 		/// </summary>
 		[JsonProperty] public string Name {
 			get { return _Name; }

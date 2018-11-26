@@ -38,7 +38,21 @@ namespace es.BLL {
 			return items;
 		}
 
-		public static int Update(Goods_tagInfo item) => dal.Update(item).ExecuteNonQuery();
+		#region enum _
+		public enum _ {
+			/// <summary>
+			/// 产品id
+			/// </summary>
+			Goods_id = 1, 
+			/// <summary>
+			/// 标签id
+			/// </summary>
+			Tag_id
+		}
+		#endregion
+
+		public static int Update(Goods_tagInfo item, _ ignore1 = 0, _ ignore2 = 0, _ ignore3 = 0) => Update(item, new[] { ignore1, ignore2, ignore3 });
+		public static int Update(Goods_tagInfo item, _[] ignore) => dal.Update(item, ignore?.Where(a => a > 0).Select(a => Enum.GetName(typeof(_), a)).ToArray()).ExecuteNonQuery();
 		public static es.DAL.Goods_tag.SqlUpdateBuild UpdateDiy(int Goods_id, int Tag_id) => new es.DAL.Goods_tag.SqlUpdateBuild(new List<Goods_tagInfo> { new Goods_tagInfo { Goods_id = Goods_id, Tag_id = Tag_id } }, false);
 		public static es.DAL.Goods_tag.SqlUpdateBuild UpdateDiy(List<Goods_tagInfo> dataSource) => new es.DAL.Goods_tag.SqlUpdateBuild(dataSource, true);
 		public static es.DAL.Goods_tag.SqlUpdateBuild UpdateDiyDangerous => new es.DAL.Goods_tag.SqlUpdateBuild();
@@ -74,14 +88,14 @@ namespace es.BLL {
 		public static Goods_tagInfo GetItem(int Goods_id, int Tag_id) => SqlHelper.CacheShell(string.Concat("es_BLL_Goods_tag_", Goods_id, "_,_", Tag_id), itemCacheTimeout, () => Select.WhereGoods_id(Goods_id).WhereTag_id(Tag_id).ToOne());
 
 		public static List<Goods_tagInfo> GetItems() => Select.ToList();
-		public static Goods_tagSelectBuild Select => new Goods_tagSelectBuild(dal);
-		public static Goods_tagSelectBuild SelectAs(string alias = "a") => Select.As(alias);
+		public static SelectBuild Select => new SelectBuild(dal);
+		public static SelectBuild SelectAs(string alias = "a") => Select.As(alias);
 		public static List<Goods_tagInfo> GetItemsByGoods_id(params int?[] Goods_id) => Select.WhereGoods_id(Goods_id).ToList();
 		public static List<Goods_tagInfo> GetItemsByGoods_id(int?[] Goods_id, int limit) => Select.WhereGoods_id(Goods_id).Limit(limit).ToList();
-		public static Goods_tagSelectBuild SelectByGoods_id(params int?[] Goods_id) => Select.WhereGoods_id(Goods_id);
+		public static SelectBuild SelectByGoods_id(params int?[] Goods_id) => Select.WhereGoods_id(Goods_id);
 		public static List<Goods_tagInfo> GetItemsByTag_id(params int?[] Tag_id) => Select.WhereTag_id(Tag_id).ToList();
 		public static List<Goods_tagInfo> GetItemsByTag_id(int?[] Tag_id, int limit) => Select.WhereTag_id(Tag_id).Limit(limit).ToList();
-		public static Goods_tagSelectBuild SelectByTag_id(params int?[] Tag_id) => Select.WhereTag_id(Tag_id);
+		public static SelectBuild SelectByTag_id(params int?[] Tag_id) => Select.WhereTag_id(Tag_id);
 
 		#region async
 		async public static Task<List<Goods_tagInfo>> DeleteByTag_idAsync(int Tag_id) {
@@ -100,7 +114,8 @@ namespace es.BLL {
 			return item;
 		}
 		async public static Task<Goods_tagInfo> GetItemAsync(int Goods_id, int Tag_id) => await SqlHelper.CacheShellAsync(string.Concat("es_BLL_Goods_tag_", Goods_id, "_,_", Tag_id), itemCacheTimeout, () => Select.WhereGoods_id(Goods_id).WhereTag_id(Tag_id).ToOneAsync());
-		async public static Task<int> UpdateAsync(Goods_tagInfo item) => await dal.Update(item).ExecuteNonQueryAsync();
+		public static Task<int> UpdateAsync(Goods_tagInfo item, _ ignore1 = 0, _ ignore2 = 0, _ ignore3 = 0) => UpdateAsync(item, new[] { ignore1, ignore2, ignore3 });
+		public static Task<int> UpdateAsync(Goods_tagInfo item, _[] ignore) => dal.Update(item, ignore?.Where(a => a > 0).Select(a => Enum.GetName(typeof(_), a)).ToArray()).ExecuteNonQueryAsync();
 
 		public static Task<Goods_tagInfo> InsertAsync(int? Goods_id, int? Tag_id) {
 			return InsertAsync(new Goods_tagInfo {
@@ -117,7 +132,7 @@ namespace es.BLL {
 			if (itemCacheTimeout > 0) await RemoveCacheAsync(newitems);
 			return newitems;
 		}
-		async internal static Task RemoveCacheAsync(Goods_tagInfo item) => await RemoveCacheAsync(item == null ? null : new [] { item });
+		internal static Task RemoveCacheAsync(Goods_tagInfo item) => RemoveCacheAsync(item == null ? null : new [] { item });
 		async internal static Task RemoveCacheAsync(IEnumerable<Goods_tagInfo> items) {
 			if (itemCacheTimeout <= 0 || items == null || items.Any() == false) return;
 			var keys = new string[items.Count() * 1];
@@ -134,22 +149,13 @@ namespace es.BLL {
 		public static Task<List<Goods_tagInfo>> GetItemsByTag_idAsync(params int?[] Tag_id) => Select.WhereTag_id(Tag_id).ToListAsync();
 		public static Task<List<Goods_tagInfo>> GetItemsByTag_idAsync(int?[] Tag_id, int limit) => Select.WhereTag_id(Tag_id).Limit(limit).ToListAsync();
 		#endregion
-	}
-	public partial class Goods_tagSelectBuild : SelectBuild<Goods_tagInfo, Goods_tagSelectBuild> {
-		public Goods_tagSelectBuild WhereGoods_id(params int?[] Goods_id) {
-			return this.Where1Or(@"a.[goods_id] = {0}", Goods_id);
+
+		public partial class SelectBuild : SelectBuild<Goods_tagInfo, SelectBuild> {
+			public SelectBuild WhereGoods_id(params int?[] Goods_id) => this.Where1Or(@"a.[goods_id] = {0}", Goods_id);
+			public SelectBuild WhereGoods_id(Goods.SelectBuild select, bool isNotIn = false) => this.Where($@"a.[goods_id] {(isNotIn ? "NOT IN" : "IN")} ({select.ToString(@"[id]")})");
+			public SelectBuild WhereTag_id(params int?[] Tag_id) => this.Where1Or(@"a.[tag_id] = {0}", Tag_id);
+			public SelectBuild WhereTag_id(Tag.SelectBuild select, bool isNotIn = false) => this.Where($@"a.[tag_id] {(isNotIn ? "NOT IN" : "IN")} ({select.ToString(@"[id]")})");
+			public SelectBuild(IDAL dal) : base(dal, SqlHelper.Instance) { }
 		}
-		public Goods_tagSelectBuild WhereGoods_id(GoodsSelectBuild select, bool isNotIn = false) {
-			var opt = isNotIn ? "NOT IN" : "IN";
-			return this.Where($@"a.[goods_id] {opt} ({select.ToString(@"[id]")})");
-		}
-		public Goods_tagSelectBuild WhereTag_id(params int?[] Tag_id) {
-			return this.Where1Or(@"a.[tag_id] = {0}", Tag_id);
-		}
-		public Goods_tagSelectBuild WhereTag_id(TagSelectBuild select, bool isNotIn = false) {
-			var opt = isNotIn ? "NOT IN" : "IN";
-			return this.Where($@"a.[tag_id] {opt} ({select.ToString(@"[id]")})");
-		}
-		public Goods_tagSelectBuild(IDAL dal) : base(dal, SqlHelper.Instance) { }
 	}
 }

@@ -99,24 +99,26 @@ namespace es.DAL {
 			return item;
 		}
 
-		public SqlUpdateBuild Update(Sys_AreaInfo item) {
-			return new SqlUpdateBuild(new List<Sys_AreaInfo> { item }, false)
-				.SetF_Id(item.F_Id)
-				.SetF_CreatorTime(item.F_CreatorTime)
-				.SetF_CreatorUserId(item.F_CreatorUserId)
-				.SetF_DeleteMark(item.F_DeleteMark)
-				.SetF_DeleteTime(item.F_DeleteTime)
-				.SetF_DeleteUserId(item.F_DeleteUserId)
-				.SetF_Description(item.F_Description)
-				.SetF_EnabledMark(item.F_EnabledMark)
-				.SetF_EnCode(item.F_EnCode)
-				.SetF_FullName(item.F_FullName)
-				.SetF_LastModifyTime(item.F_LastModifyTime)
-				.SetF_LastModifyUserId(item.F_LastModifyUserId)
-				.SetF_Layers(item.F_Layers)
-				.SetF_ParentId(item.F_ParentId)
-				.SetF_SimpleSpelling(item.F_SimpleSpelling)
-				.SetF_SortCode(item.F_SortCode);
+		public SqlUpdateBuild Update(Sys_AreaInfo item, string[] ignoreFields) {
+			var sub = new SqlUpdateBuild(new List<Sys_AreaInfo> { item }, false);
+			var ignore = ignoreFields?.ToDictionary(a => a, StringComparer.CurrentCultureIgnoreCase) ?? new Dictionary<string, string>();
+			if (ignore.ContainsKey("F_Id") == false) sub.SetF_Id(item.F_Id);
+			if (ignore.ContainsKey("F_CreatorTime") == false) sub.SetF_CreatorTime(item.F_CreatorTime);
+			if (ignore.ContainsKey("F_CreatorUserId") == false) sub.SetF_CreatorUserId(item.F_CreatorUserId);
+			if (ignore.ContainsKey("F_DeleteMark") == false) sub.SetF_DeleteMark(item.F_DeleteMark);
+			if (ignore.ContainsKey("F_DeleteTime") == false) sub.SetF_DeleteTime(item.F_DeleteTime);
+			if (ignore.ContainsKey("F_DeleteUserId") == false) sub.SetF_DeleteUserId(item.F_DeleteUserId);
+			if (ignore.ContainsKey("F_Description") == false) sub.SetF_Description(item.F_Description);
+			if (ignore.ContainsKey("F_EnabledMark") == false) sub.SetF_EnabledMark(item.F_EnabledMark);
+			if (ignore.ContainsKey("F_EnCode") == false) sub.SetF_EnCode(item.F_EnCode);
+			if (ignore.ContainsKey("F_FullName") == false) sub.SetF_FullName(item.F_FullName);
+			if (ignore.ContainsKey("F_LastModifyTime") == false) sub.SetF_LastModifyTime(item.F_LastModifyTime);
+			if (ignore.ContainsKey("F_LastModifyUserId") == false) sub.SetF_LastModifyUserId(item.F_LastModifyUserId);
+			if (ignore.ContainsKey("F_Layers") == false) sub.SetF_Layers(item.F_Layers);
+			if (ignore.ContainsKey("F_ParentId") == false) sub.SetF_ParentId(item.F_ParentId);
+			if (ignore.ContainsKey("F_SimpleSpelling") == false) sub.SetF_SimpleSpelling(item.F_SimpleSpelling);
+			if (ignore.ContainsKey("F_SortCode") == false) sub.SetF_SortCode(item.F_SortCode);
+			return sub;
 		}
 		#region class SqlUpdateBuild
 		public partial class SqlUpdateBuild {

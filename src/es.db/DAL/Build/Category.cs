@@ -69,11 +69,13 @@ namespace es.DAL {
 			return items;
 		}
 
-		public SqlUpdateBuild Update(CategoryInfo item) {
-			return new SqlUpdateBuild(new List<CategoryInfo> { item }, false)
-				.SetParent_id(item.Parent_id)
-				.SetCreate_time(item.Create_time)
-				.SetName(item.Name);
+		public SqlUpdateBuild Update(CategoryInfo item, string[] ignoreFields) {
+			var sub = new SqlUpdateBuild(new List<CategoryInfo> { item }, false);
+			var ignore = ignoreFields?.ToDictionary(a => a, StringComparer.CurrentCultureIgnoreCase) ?? new Dictionary<string, string>();
+			if (ignore.ContainsKey("parent_id") == false) sub.SetParent_id(item.Parent_id);
+			if (ignore.ContainsKey("create_time") == false) sub.SetCreate_time(item.Create_time);
+			if (ignore.ContainsKey("name") == false) sub.SetName(item.Name);
+			return sub;
 		}
 		#region class SqlUpdateBuild
 		public partial class SqlUpdateBuild {

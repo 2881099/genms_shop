@@ -70,10 +70,12 @@ namespace es.DAL {
 			return items;
 		}
 
-		public SqlUpdateBuild Update(Goods_tagInfo item) {
-			return new SqlUpdateBuild(new List<Goods_tagInfo> { item }, false)
-				.SetGoods_id(item.Goods_id)
-				.SetTag_id(item.Tag_id);
+		public SqlUpdateBuild Update(Goods_tagInfo item, string[] ignoreFields) {
+			var sub = new SqlUpdateBuild(new List<Goods_tagInfo> { item }, false);
+			var ignore = ignoreFields?.ToDictionary(a => a, StringComparer.CurrentCultureIgnoreCase) ?? new Dictionary<string, string>();
+			if (ignore.ContainsKey("goods_id") == false) sub.SetGoods_id(item.Goods_id);
+			if (ignore.ContainsKey("tag_id") == false) sub.SetTag_id(item.Tag_id);
+			return sub;
 		}
 		#region class SqlUpdateBuild
 		public partial class SqlUpdateBuild {

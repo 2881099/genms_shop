@@ -81,15 +81,17 @@ namespace es.DAL {
 			return items;
 		}
 
-		public SqlUpdateBuild Update(GoodsInfo item) {
-			return new SqlUpdateBuild(new List<GoodsInfo> { item }, false)
-				.SetCategory_id(item.Category_id)
-				.SetContent(item.Content)
-				.SetCreate_time(item.Create_time)
-				.SetImgs(item.Imgs)
-				.SetStock(item.Stock)
-				.SetTitle(item.Title)
-				.SetUpdate_time(item.Update_time);
+		public SqlUpdateBuild Update(GoodsInfo item, string[] ignoreFields) {
+			var sub = new SqlUpdateBuild(new List<GoodsInfo> { item }, false);
+			var ignore = ignoreFields?.ToDictionary(a => a, StringComparer.CurrentCultureIgnoreCase) ?? new Dictionary<string, string>();
+			if (ignore.ContainsKey("category_id") == false) sub.SetCategory_id(item.Category_id);
+			if (ignore.ContainsKey("content") == false) sub.SetContent(item.Content);
+			if (ignore.ContainsKey("create_time") == false) sub.SetCreate_time(item.Create_time);
+			if (ignore.ContainsKey("imgs") == false) sub.SetImgs(item.Imgs);
+			if (ignore.ContainsKey("stock") == false) sub.SetStock(item.Stock);
+			if (ignore.ContainsKey("title") == false) sub.SetTitle(item.Title);
+			if (ignore.ContainsKey("update_time") == false) sub.SetUpdate_time(item.Update_time);
+			return sub;
 		}
 		#region class SqlUpdateBuild
 		public partial class SqlUpdateBuild {

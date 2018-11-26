@@ -33,7 +33,45 @@ namespace es.BLL {
 			return items;
 		}
 
-		public static int Update(GoodsInfo item) => dal.Update(item).ExecuteNonQuery();
+		#region enum _
+		public enum _ {
+			/// <summary>
+			/// 产品id（自增）
+			/// </summary>
+			Id = 1, 
+			/// <summary>
+			/// 分类id
+			/// </summary>
+			Category_id, 
+			/// <summary>
+			/// 产品介绍
+			/// </summary>
+			Content, 
+			/// <summary>
+			/// 创建时间
+			/// </summary>
+			Create_time, 
+			/// <summary>
+			/// 图片
+			/// </summary>
+			Imgs, 
+			/// <summary>
+			/// 库存
+			/// </summary>
+			Stock, 
+			/// <summary>
+			/// 标题
+			/// </summary>
+			Title, 
+			/// <summary>
+			/// 更新时间
+			/// </summary>
+			Update_time
+		}
+		#endregion
+
+		public static int Update(GoodsInfo item, _ ignore1 = 0, _ ignore2 = 0, _ ignore3 = 0) => Update(item, new[] { ignore1, ignore2, ignore3 });
+		public static int Update(GoodsInfo item, _[] ignore) => dal.Update(item, ignore?.Where(a => a > 0).Select(a => Enum.GetName(typeof(_), a)).ToArray()).ExecuteNonQuery();
 		public static es.DAL.Goods.SqlUpdateBuild UpdateDiy(int Id) => new es.DAL.Goods.SqlUpdateBuild(new List<GoodsInfo> { new GoodsInfo { Id = Id } }, false);
 		public static es.DAL.Goods.SqlUpdateBuild UpdateDiy(List<GoodsInfo> dataSource) => new es.DAL.Goods.SqlUpdateBuild(dataSource, true);
 		public static es.DAL.Goods.SqlUpdateBuild UpdateDiyDangerous => new es.DAL.Goods.SqlUpdateBuild();
@@ -80,13 +118,13 @@ namespace es.BLL {
 		public static GoodsInfo GetItem(int Id) => SqlHelper.CacheShell(string.Concat("es_BLL_Goods_", Id), itemCacheTimeout, () => Select.WhereId(Id).ToOne());
 
 		public static List<GoodsInfo> GetItems() => Select.ToList();
-		public static GoodsSelectBuild Select => new GoodsSelectBuild(dal);
-		public static GoodsSelectBuild SelectAs(string alias = "a") => Select.As(alias);
+		public static SelectBuild Select => new SelectBuild(dal);
+		public static SelectBuild SelectAs(string alias = "a") => Select.As(alias);
 		public static List<GoodsInfo> GetItemsByCategory_id(params int?[] Category_id) => Select.WhereCategory_id(Category_id).ToList();
 		public static List<GoodsInfo> GetItemsByCategory_id(int?[] Category_id, int limit) => Select.WhereCategory_id(Category_id).Limit(limit).ToList();
-		public static GoodsSelectBuild SelectByCategory_id(params int?[] Category_id) => Select.WhereCategory_id(Category_id);
-		public static GoodsSelectBuild SelectByTag(params TagInfo[] tags) => Select.WhereTag(tags);
-		public static GoodsSelectBuild SelectByTag_id(params int[] tag_ids) => Select.WhereTag_id(tag_ids);
+		public static SelectBuild SelectByCategory_id(params int?[] Category_id) => Select.WhereCategory_id(Category_id);
+		public static SelectBuild SelectByTag(params TagInfo[] tags) => Select.WhereTag(tags);
+		public static SelectBuild SelectByTag_id(params int[] tag_ids) => Select.WhereTag_id(tag_ids);
 
 		#region async
 		async public static Task<List<GoodsInfo>> DeleteByCategory_idAsync(int Category_id) {
@@ -100,7 +138,8 @@ namespace es.BLL {
 			return item;
 		}
 		async public static Task<GoodsInfo> GetItemAsync(int Id) => await SqlHelper.CacheShellAsync(string.Concat("es_BLL_Goods_", Id), itemCacheTimeout, () => Select.WhereId(Id).ToOneAsync());
-		async public static Task<int> UpdateAsync(GoodsInfo item) => await dal.Update(item).ExecuteNonQueryAsync();
+		public static Task<int> UpdateAsync(GoodsInfo item, _ ignore1 = 0, _ ignore2 = 0, _ ignore3 = 0) => UpdateAsync(item, new[] { ignore1, ignore2, ignore3 });
+		public static Task<int> UpdateAsync(GoodsInfo item, _[] ignore) => dal.Update(item, ignore?.Where(a => a > 0).Select(a => Enum.GetName(typeof(_), a)).ToArray()).ExecuteNonQueryAsync();
 
 		/// <summary>
 		/// 适用字段较少的表；避规后续改表风险，字段数较大请改用 Goods.Insert(GoodsInfo item)
@@ -128,7 +167,7 @@ namespace es.BLL {
 			if (itemCacheTimeout > 0) await RemoveCacheAsync(newitems);
 			return newitems;
 		}
-		async internal static Task RemoveCacheAsync(GoodsInfo item) => await RemoveCacheAsync(item == null ? null : new [] { item });
+		internal static Task RemoveCacheAsync(GoodsInfo item) => RemoveCacheAsync(item == null ? null : new [] { item });
 		async internal static Task RemoveCacheAsync(IEnumerable<GoodsInfo> items) {
 			if (itemCacheTimeout <= 0 || items == null || items.Any() == false) return;
 			var keys = new string[items.Count() * 1];
@@ -143,50 +182,45 @@ namespace es.BLL {
 		public static Task<List<GoodsInfo>> GetItemsByCategory_idAsync(params int?[] Category_id) => Select.WhereCategory_id(Category_id).ToListAsync();
 		public static Task<List<GoodsInfo>> GetItemsByCategory_idAsync(int?[] Category_id, int limit) => Select.WhereCategory_id(Category_id).Limit(limit).ToListAsync();
 		#endregion
-	}
-	public partial class GoodsSelectBuild : SelectBuild<GoodsInfo, GoodsSelectBuild> {
-		public GoodsSelectBuild WhereCategory_id(params int?[] Category_id) {
-			return this.Where1Or(@"a.[category_id] = {0}", Category_id);
+
+		public partial class SelectBuild : SelectBuild<GoodsInfo, SelectBuild> {
+			public SelectBuild WhereCategory_id(params int?[] Category_id) => this.Where1Or(@"a.[category_id] = {0}", Category_id);
+			public SelectBuild WhereCategory_id(Category.SelectBuild select, bool isNotIn = false) => this.Where($@"a.[category_id] {(isNotIn ? "NOT IN" : "IN")} ({select.ToString(@"[id]")})");
+			public SelectBuild WhereTag(params TagInfo[] tags) => WhereTag(tags?.ToArray(), null);
+			public SelectBuild WhereTag_id(params int[] tag_ids) => WhereTag_id(tag_ids?.ToArray(), null);
+			public SelectBuild WhereTag(TagInfo[] tags, Action<Goods_tag.SelectBuild> subCondition) => WhereTag_id(tags?.Where<TagInfo>(a => a != null).Select<TagInfo, int>(a => a.Id.Value).ToArray(), subCondition);
+			public SelectBuild WhereTag_id(int[] tag_ids, Action<Goods_tag.SelectBuild> subCondition) {
+				if (tag_ids == null || tag_ids.Length == 0) return this;
+				Goods_tag.SelectBuild subConditionSelect = Goods_tag.Select.Where(string.Format(@"[goods_id] = a . [id] AND [tag_id] IN ('{0}')", string.Join("','", tag_ids.Select(a => string.Concat(a).Replace("'", "''")))));
+				subCondition?.Invoke(subConditionSelect);
+				var subConditionSql = subConditionSelect.ToString(@"[goods_id]").Replace("] a \r\nWHERE (", "] WHERE (");
+				if (subCondition != null) subConditionSql = subConditionSql.Replace("a.[", "[dbo].[goods_tag].[");
+				return base.Where($"EXISTS({subConditionSql})");
+			}
+			/// <summary>
+			/// 产品id（自增），多个参数等于 OR 查询
+			/// </summary>
+			public SelectBuild WhereId(params int[] Id) => this.Where1Or(@"a.[id] = {0}", Id);
+			public SelectBuild WhereIdRange(int? begin) => base.Where(@"a.[id] >= {0}", begin);
+			public SelectBuild WhereIdRange(int? begin, int? end) => end == null ? this.WhereIdRange(begin) : base.Where(@"a.[id] between {0} and {1}", begin, end);
+			public SelectBuild WhereContentLike(string pattern, bool isNotLike = false) => this.Where($@"a.[content] {(isNotLike ? "LIKE" : "NOT LIKE")} {{0}}", pattern);
+			public SelectBuild WhereCreate_timeRange(DateTime? begin) => base.Where(@"a.[create_time] >= {0}", begin);
+			public SelectBuild WhereCreate_timeRange(DateTime? begin, DateTime? end) => end == null ? this.WhereCreate_timeRange(begin) : base.Where(@"a.[create_time] between {0} and {1}", begin, end);
+			public SelectBuild WhereImgsLike(string pattern, bool isNotLike = false) => this.Where($@"a.[imgs] {(isNotLike ? "LIKE" : "NOT LIKE")} {{0}}", pattern);
+			/// <summary>
+			/// 库存，多个参数等于 OR 查询
+			/// </summary>
+			public SelectBuild WhereStock(params int?[] Stock) => this.Where1Or(@"a.[stock] = {0}", Stock);
+			public SelectBuild WhereStockRange(int? begin) => base.Where(@"a.[stock] >= {0}", begin);
+			public SelectBuild WhereStockRange(int? begin, int? end) => end == null ? this.WhereStockRange(begin) : base.Where(@"a.[stock] between {0} and {1}", begin, end);
+			/// <summary>
+			/// 标题，多个参数等于 OR 查询
+			/// </summary>
+			public SelectBuild WhereTitle(params string[] Title) => this.Where1Or(@"a.[title] = {0}", Title);
+			public SelectBuild WhereTitleLike(string pattern, bool isNotLike = false) => this.Where($@"a.[title] {(isNotLike ? "LIKE" : "NOT LIKE")} {{0}}", pattern);
+			public SelectBuild WhereUpdate_timeRange(DateTime? begin) => base.Where(@"a.[update_time] >= {0}", begin);
+			public SelectBuild WhereUpdate_timeRange(DateTime? begin, DateTime? end) => end == null ? this.WhereUpdate_timeRange(begin) : base.Where(@"a.[update_time] between {0} and {1}", begin, end);
+			public SelectBuild(IDAL dal) : base(dal, SqlHelper.Instance) { }
 		}
-		public GoodsSelectBuild WhereCategory_id(CategorySelectBuild select, bool isNotIn = false) {
-			var opt = isNotIn ? "NOT IN" : "IN";
-			return this.Where($@"a.[category_id] {opt} ({select.ToString(@"[id]")})");
-		}
-		public GoodsSelectBuild WhereTag(params TagInfo[] tags) => WhereTag(tags?.ToArray(), null);
-		public GoodsSelectBuild WhereTag_id(params int[] tag_ids) => WhereTag_id(tag_ids?.ToArray(), null);
-		public GoodsSelectBuild WhereTag(TagInfo[] tags, Action<Goods_tagSelectBuild> subCondition) => WhereTag_id(tags?.Where<TagInfo>(a => a != null).Select<TagInfo, int>(a => a.Id.Value).ToArray(), subCondition);
-		public GoodsSelectBuild WhereTag_id(int[] tag_ids, Action<Goods_tagSelectBuild> subCondition) {
-			if (tag_ids == null || tag_ids.Length == 0) return this;
-			Goods_tagSelectBuild subConditionSelect = Goods_tag.Select.Where(string.Format(@"[goods_id] = a . [id] AND [tag_id] IN ('{0}')", string.Join("','", tag_ids.Select(a => string.Concat(a).Replace("'", "''")))));
-			if (subCondition != null) subCondition(subConditionSelect);
-			var subConditionSql = subConditionSelect.ToString(@"[goods_id]").Replace("] a \r\nWHERE (", "] WHERE (");
-			if (subCondition != null) subConditionSql = subConditionSql.Replace("a.[", "[dbo].[goods_tag].[");
-			return base.Where($"EXISTS({subConditionSql})");
-		}
-		public GoodsSelectBuild WhereId(params int[] Id) => this.Where1Or(@"a.[id] = {0}", Id);
-		public GoodsSelectBuild WhereIdRange(int? begin) => base.Where(@"a.[id] >= {0}", begin);
-		public GoodsSelectBuild WhereIdRange(int? begin, int? end) => end == null ? this.WhereIdRange(begin) : base.Where(@"a.[id] between {0} and {1}", begin, end);
-		public GoodsSelectBuild WhereContent(params string[] Content) => this.Where1Or(@"a.[content] = {0}", Content);
-		public GoodsSelectBuild WhereContentLike(string pattern, bool isNotLike = false) {
-			var opt = isNotLike ? "LIKE" : "NOT LIKE";
-			return this.Where($@"a.[content] {opt} {{0}}", pattern);
-		}
-		public GoodsSelectBuild WhereCreate_timeRange(DateTime? begin) => base.Where(@"a.[create_time] >= {0}", begin);
-		public GoodsSelectBuild WhereCreate_timeRange(DateTime? begin, DateTime? end) => end == null ? this.WhereCreate_timeRange(begin) : base.Where(@"a.[create_time] between {0} and {1}", begin, end);
-		public GoodsSelectBuild WhereImgsLike(string pattern, bool isNotLike = false) {
-			var opt = isNotLike ? "LIKE" : "NOT LIKE";
-			return this.Where($@"a.[imgs] {opt} {{0}}", pattern);
-		}
-		public GoodsSelectBuild WhereStock(params int?[] Stock) => this.Where1Or(@"a.[stock] = {0}", Stock);
-		public GoodsSelectBuild WhereStockRange(int? begin) => base.Where(@"a.[stock] >= {0}", begin);
-		public GoodsSelectBuild WhereStockRange(int? begin, int? end) => end == null ? this.WhereStockRange(begin) : base.Where(@"a.[stock] between {0} and {1}", begin, end);
-		public GoodsSelectBuild WhereTitle(params string[] Title) => this.Where1Or(@"a.[title] = {0}", Title);
-		public GoodsSelectBuild WhereTitleLike(string pattern, bool isNotLike = false) {
-			var opt = isNotLike ? "LIKE" : "NOT LIKE";
-			return this.Where($@"a.[title] {opt} {{0}}", pattern);
-		}
-		public GoodsSelectBuild WhereUpdate_timeRange(DateTime? begin) => base.Where(@"a.[update_time] >= {0}", begin);
-		public GoodsSelectBuild WhereUpdate_timeRange(DateTime? begin, DateTime? end) => end == null ? this.WhereUpdate_timeRange(begin) : base.Where(@"a.[update_time] between {0} and {1}", begin, end);
-		public GoodsSelectBuild(IDAL dal) : base(dal, SqlHelper.Instance) { }
 	}
 }
