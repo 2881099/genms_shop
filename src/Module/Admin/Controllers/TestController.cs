@@ -21,7 +21,7 @@ namespace es.Module.Admin.Controllers {
 		public TestController(ILogger<TestController> logger) : base(logger) { }
 
 		[HttpGet]
-		async public Task<ActionResult> List([FromServices]IConfiguration cfg, [FromQuery] int limit = 20, [FromQuery] int page = 1) {
+		async public Task<ActionResult> List([FromQuery] int limit = 20, [FromQuery] int page = 1) {
 			var select = Test.Select;
 			var items = await select.Count(out var count).Page(page, limit).ToListAsync();
 			ViewBag.items = items;

@@ -21,7 +21,7 @@ namespace es.Module.Test.Controllers {
 		public TestController(ILogger<TestController> logger) : base(logger) { }
 
 		[HttpGet]
-		public APIReturn List([FromServices]IConfiguration cfg) {
+		public APIReturn List() {
 			return APIReturn.成功;
 		}
 	}

@@ -21,13 +21,13 @@ namespace es.Module.Admin.Controllers {
 		public GoodsController(ILogger<GoodsController> logger) : base(logger) { }
 
 		[HttpGet]
-		async public Task<ActionResult> List([FromServices]IConfiguration cfg, [FromQuery] string key, [FromQuery] int?[] Category_id, [FromQuery] int[] Tag_id, [FromQuery] int limit = 20, [FromQuery] int page = 1) {
+		async public Task<ActionResult> List([FromQuery] string key, [FromQuery] int?[] Category_id, [FromQuery] int[] Tag_id, [FromQuery] int limit = 20, [FromQuery] int page = 1) {
 			var select = Goods.Select
 				.Where(!string.IsNullOrEmpty(key), "a.content ilike {0} or a.imgs ilike {0} or a.title ilike {0}", string.Concat("%", key, "%"));
 			if (Category_id.Length > 0) select.WhereCategory_id(Category_id);
 			if (Tag_id.Length > 0) select.WhereTag_id(Tag_id);
 			var items = await select.Count(out var count)
-				.LeftJoin<Category>("b", "b.id = a.category_id").Page(page, limit).ToListAsync();
+				.LeftJoin(a => a.Obj_category.Id == a.Category_id).Page(page, limit).ToListAsync();
 			ViewBag.items = items;
 			ViewBag.count = count;
 			return View();

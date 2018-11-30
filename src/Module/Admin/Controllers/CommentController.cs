@@ -21,12 +21,12 @@ namespace es.Module.Admin.Controllers {
 		public CommentController(ILogger<CommentController> logger) : base(logger) { }
 
 		[HttpGet]
-		async public Task<ActionResult> List([FromServices]IConfiguration cfg, [FromQuery] string key, [FromQuery] int?[] Goods_id, [FromQuery] int limit = 20, [FromQuery] int page = 1) {
+		async public Task<ActionResult> List([FromQuery] string key, [FromQuery] int?[] Goods_id, [FromQuery] int limit = 20, [FromQuery] int page = 1) {
 			var select = Comment.Select
 				.Where(!string.IsNullOrEmpty(key), "a.content ilike {0} or a.nickname ilike {0}", string.Concat("%", key, "%"));
 			if (Goods_id.Length > 0) select.WhereGoods_id(Goods_id);
 			var items = await select.Count(out var count)
-				.LeftJoin<Goods>("b", "b.id = a.goods_id").Page(page, limit).ToListAsync();
+				.LeftJoin(a => a.Obj_goods.Id == a.Goods_id).Page(page, limit).ToListAsync();
 			ViewBag.items = items;
 			ViewBag.count = count;
 			return View();

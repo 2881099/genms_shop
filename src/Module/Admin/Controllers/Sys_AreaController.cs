@@ -21,7 +21,7 @@ namespace es.Module.Admin.Controllers {
 		public Sys_AreaController(ILogger<Sys_AreaController> logger) : base(logger) { }
 
 		[HttpGet]
-		async public Task<ActionResult> List([FromServices]IConfiguration cfg, [FromQuery] string key, [FromQuery] int limit = 20, [FromQuery] int page = 1) {
+		async public Task<ActionResult> List([FromQuery] string key, [FromQuery] int limit = 20, [FromQuery] int page = 1) {
 			var select = Sys_Area.Select
 				.Where(!string.IsNullOrEmpty(key), "a.F_Id ilike {0} or a.F_CreatorUserId ilike {0} or a.F_DeleteUserId ilike {0} or a.F_Description ilike {0} or a.F_EnCode ilike {0} or a.F_FullName ilike {0} or a.F_LastModifyUserId ilike {0} or a.F_ParentId ilike {0} or a.F_SimpleSpelling ilike {0}", string.Concat("%", key, "%"));
 			var items = await select.Count(out var count).Page(page, limit).ToListAsync();

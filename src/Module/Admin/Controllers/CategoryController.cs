@@ -21,7 +21,7 @@ namespace es.Module.Admin.Controllers {
 		public CategoryController(ILogger<CategoryController> logger) : base(logger) { }
 
 		[HttpGet]
-		async public Task<ActionResult> List([FromServices]IConfiguration cfg, [FromQuery] string key, [FromQuery] int?[] Parent_id, [FromQuery] int limit = 20, [FromQuery] int page = 1) {
+		async public Task<ActionResult> List([FromQuery] string key, [FromQuery] int?[] Parent_id, [FromQuery] int limit = 20, [FromQuery] int page = 1) {
 			var select = Category.Select
 				.Where(!string.IsNullOrEmpty(key), "a.name ilike {0}", string.Concat("%", key, "%"));
 			if (Parent_id.Length > 0) select.WhereParent_id(Parent_id);
