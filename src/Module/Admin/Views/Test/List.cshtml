@@ -19,7 +19,9 @@
 					<tr>
 						<th scope="col" style="width:2%;"><input type="checkbox" onclick="$('#GridView1 tbody tr').each(function (idx, el) { var chk = $(el).find('td:first input[type=\'checkbox\']')[0]; if (chk) chk.checked = !chk.checked; });" /></th>
 						<th scope="col">id</th>
+						<th scope="col">f_bit</th>
 						<th scope="col">F_ShortCode</th>
+						<th scope="col">f_tinyint</th>
 						<th scope="col" style="width:5%;">&nbsp;</th>
 					</tr>
 					<tbody>
@@ -27,7 +29,9 @@
 							<tr>
 								<td><input type="checkbox" id="id" name="id" value="@item.Id" /></td>
 								<td>@item.Id</td>
+								<td>@item.F_bit</td>
 								<td>@item.F_ShortCode</td>
+								<td>@item.F_tinyint</td>
 								<td><a href="./edit?Id=@item.Id">修改</a></td>
 							</tr>
 						}

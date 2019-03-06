@@ -43,19 +43,19 @@ public static partial class esExtensionMethods {
 	public static IDictionary[] ToBson(this IEnumerable<Goods_tagInfo> items, Func<Goods_tagInfo, object> func = null) => GetBson(items, func);
 	public static es.DAL.Goods_tag.SqlUpdateBuild UpdateDiy(this List<Goods_tagInfo> items) => es.BLL.Goods_tag.UpdateDiy(items);
 
-	public static string ToJson(this Sys_AreaInfo item) => string.Concat(item);
-	public static string ToJson(this Sys_AreaInfo[] items) => GetJson(items);
-	public static string ToJson(this IEnumerable<Sys_AreaInfo> items) => GetJson(items);
-	public static IDictionary[] ToBson(this Sys_AreaInfo[] items, Func<Sys_AreaInfo, object> func = null) => GetBson(items, func);
-	public static IDictionary[] ToBson(this IEnumerable<Sys_AreaInfo> items, Func<Sys_AreaInfo, object> func = null) => GetBson(items, func);
-	public static es.DAL.Sys_Area.SqlUpdateBuild UpdateDiy(this List<Sys_AreaInfo> items) => es.BLL.Sys_Area.UpdateDiy(items);
-
 	public static string ToJson(this TagInfo item) => string.Concat(item);
 	public static string ToJson(this TagInfo[] items) => GetJson(items);
 	public static string ToJson(this IEnumerable<TagInfo> items) => GetJson(items);
 	public static IDictionary[] ToBson(this TagInfo[] items, Func<TagInfo, object> func = null) => GetBson(items, func);
 	public static IDictionary[] ToBson(this IEnumerable<TagInfo> items, Func<TagInfo, object> func = null) => GetBson(items, func);
 	public static es.DAL.Tag.SqlUpdateBuild UpdateDiy(this List<TagInfo> items) => es.BLL.Tag.UpdateDiy(items);
+
+	public static string ToJson(this Tb_alltypeInfo item) => string.Concat(item);
+	public static string ToJson(this Tb_alltypeInfo[] items) => GetJson(items);
+	public static string ToJson(this IEnumerable<Tb_alltypeInfo> items) => GetJson(items);
+	public static IDictionary[] ToBson(this Tb_alltypeInfo[] items, Func<Tb_alltypeInfo, object> func = null) => GetBson(items, func);
+	public static IDictionary[] ToBson(this IEnumerable<Tb_alltypeInfo> items, Func<Tb_alltypeInfo, object> func = null) => GetBson(items, func);
+	public static es.DAL.Tb_alltype.SqlUpdateBuild UpdateDiy(this List<Tb_alltypeInfo> items) => es.BLL.Tb_alltype.UpdateDiy(items);
 
 	public static string ToJson(this TestInfo item) => string.Concat(item);
 	public static string ToJson(this TestInfo[] items) => GetJson(items);

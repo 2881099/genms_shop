@@ -78,14 +78,14 @@ namespace es.BLL {
 			var keys = new string[items.Count() * 1];
 			var keysIdx = 0;
 			foreach (var item in items) {
-				keys[keysIdx++] = string.Concat("es_BLL_Goods_tag_", item.Goods_id, "_,_", item.Tag_id);
+				keys[keysIdx++] = string.Concat("es_BLL:Goods_tag:", item.Goods_id, "_,_", item.Tag_id);
 			}
 			if (SqlHelper.Instance.CurrentThreadTransaction != null) SqlHelper.Instance.PreRemove(keys);
 			else SqlHelper.CacheRemove(keys);
 		}
 		#endregion
 
-		public static Goods_tagInfo GetItem(int Goods_id, int Tag_id) => SqlHelper.CacheShell(string.Concat("es_BLL_Goods_tag_", Goods_id, "_,_", Tag_id), itemCacheTimeout, () => Select.WhereGoods_id(Goods_id).WhereTag_id(Tag_id).ToOne());
+		public static Goods_tagInfo GetItem(int Goods_id, int Tag_id) => SqlHelper.CacheShell(string.Concat("es_BLL:Goods_tag:", Goods_id, "_,_", Tag_id), itemCacheTimeout, () => Select.WhereGoods_id(Goods_id).WhereTag_id(Tag_id).ToOne());
 
 		public static List<Goods_tagInfo> GetItems() => Select.ToList();
 		public static SelectBuild Select => new SelectBuild(dal);
@@ -113,7 +113,7 @@ namespace es.BLL {
 			if (itemCacheTimeout > 0) await RemoveCacheAsync(item);
 			return item;
 		}
-		async public static Task<Goods_tagInfo> GetItemAsync(int Goods_id, int Tag_id) => await SqlHelper.CacheShellAsync(string.Concat("es_BLL_Goods_tag_", Goods_id, "_,_", Tag_id), itemCacheTimeout, () => Select.WhereGoods_id(Goods_id).WhereTag_id(Tag_id).ToOneAsync());
+		async public static Task<Goods_tagInfo> GetItemAsync(int Goods_id, int Tag_id) => await SqlHelper.CacheShellAsync(string.Concat("es_BLL:Goods_tag:", Goods_id, "_,_", Tag_id), itemCacheTimeout, () => Select.WhereGoods_id(Goods_id).WhereTag_id(Tag_id).ToOneAsync());
 		public static Task<int> UpdateAsync(Goods_tagInfo item, _ ignore1 = 0, _ ignore2 = 0, _ ignore3 = 0) => UpdateAsync(item, new[] { ignore1, ignore2, ignore3 });
 		public static Task<int> UpdateAsync(Goods_tagInfo item, _[] ignore) => dal.Update(item, ignore?.Where(a => a > 0).Select(a => Enum.GetName(typeof(_), a)).ToArray()).ExecuteNonQueryAsync();
 
@@ -138,7 +138,7 @@ namespace es.BLL {
 			var keys = new string[items.Count() * 1];
 			var keysIdx = 0;
 			foreach (var item in items) {
-				keys[keysIdx++] = string.Concat("es_BLL_Goods_tag_", item.Goods_id, "_,_", item.Tag_id);
+				keys[keysIdx++] = string.Concat("es_BLL:Goods_tag:", item.Goods_id, "_,_", item.Tag_id);
 			}
 			await SqlHelper.CacheRemoveAsync(keys);
 		}

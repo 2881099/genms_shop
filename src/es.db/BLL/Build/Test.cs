@@ -31,7 +31,9 @@ namespace es.BLL {
 		#region enum _
 		public enum _ {
 			Id = 1, 
-			F_ShortCode
+			F_bit, 
+			F_ShortCode, 
+			F_tinyint
 		}
 		#endregion
 
@@ -41,10 +43,12 @@ namespace es.BLL {
 		public static es.DAL.Test.SqlUpdateBuild UpdateDiy(List<TestInfo> dataSource) => new es.DAL.Test.SqlUpdateBuild(dataSource, true);
 		public static es.DAL.Test.SqlUpdateBuild UpdateDiyDangerous => new es.DAL.Test.SqlUpdateBuild();
 
-		public static TestInfo Insert(int? Id, int? F_ShortCode) {
+		public static TestInfo Insert(int? Id, bool? F_bit, int? F_ShortCode, byte? F_tinyint) {
 			return Insert(new TestInfo {
 				Id = Id, 
-				F_ShortCode = F_ShortCode});
+				F_bit = F_bit, 
+				F_ShortCode = F_ShortCode, 
+				F_tinyint = F_tinyint});
 		}
 		public static TestInfo Insert(TestInfo item) {
 			item = dal.Insert(item);
@@ -62,14 +66,14 @@ namespace es.BLL {
 			var keys = new string[items.Count() * 1];
 			var keysIdx = 0;
 			foreach (var item in items) {
-				keys[keysIdx++] = string.Concat("es_BLL_Test_", item.Id);
+				keys[keysIdx++] = string.Concat("es_BLL:Test:", item.Id);
 			}
 			if (SqlHelper.Instance.CurrentThreadTransaction != null) SqlHelper.Instance.PreRemove(keys);
 			else SqlHelper.CacheRemove(keys);
 		}
 		#endregion
 
-		public static TestInfo GetItem(int Id) => SqlHelper.CacheShell(string.Concat("es_BLL_Test_", Id), itemCacheTimeout, () => Select.WhereId(Id).ToOne());
+		public static TestInfo GetItem(int Id) => SqlHelper.CacheShell(string.Concat("es_BLL:Test:", Id), itemCacheTimeout, () => Select.WhereId(Id).ToOne());
 
 		public static List<TestInfo> GetItems() => Select.ToList();
 		public static SelectBuild Select => new SelectBuild(dal);
@@ -81,14 +85,16 @@ namespace es.BLL {
 			if (itemCacheTimeout > 0) await RemoveCacheAsync(item);
 			return item;
 		}
-		async public static Task<TestInfo> GetItemAsync(int Id) => await SqlHelper.CacheShellAsync(string.Concat("es_BLL_Test_", Id), itemCacheTimeout, () => Select.WhereId(Id).ToOneAsync());
+		async public static Task<TestInfo> GetItemAsync(int Id) => await SqlHelper.CacheShellAsync(string.Concat("es_BLL:Test:", Id), itemCacheTimeout, () => Select.WhereId(Id).ToOneAsync());
 		public static Task<int> UpdateAsync(TestInfo item, _ ignore1 = 0, _ ignore2 = 0, _ ignore3 = 0) => UpdateAsync(item, new[] { ignore1, ignore2, ignore3 });
 		public static Task<int> UpdateAsync(TestInfo item, _[] ignore) => dal.Update(item, ignore?.Where(a => a > 0).Select(a => Enum.GetName(typeof(_), a)).ToArray()).ExecuteNonQueryAsync();
 
-		public static Task<TestInfo> InsertAsync(int? Id, int? F_ShortCode) {
+		public static Task<TestInfo> InsertAsync(int? Id, bool? F_bit, int? F_ShortCode, byte? F_tinyint) {
 			return InsertAsync(new TestInfo {
 				Id = Id, 
-				F_ShortCode = F_ShortCode});
+				F_bit = F_bit, 
+				F_ShortCode = F_ShortCode, 
+				F_tinyint = F_tinyint});
 		}
 		async public static Task<TestInfo> InsertAsync(TestInfo item) {
 			item = await dal.InsertAsync(item);
@@ -106,7 +112,7 @@ namespace es.BLL {
 			var keys = new string[items.Count() * 1];
 			var keysIdx = 0;
 			foreach (var item in items) {
-				keys[keysIdx++] = string.Concat("es_BLL_Test_", item.Id);
+				keys[keysIdx++] = string.Concat("es_BLL:Test:", item.Id);
 			}
 			await SqlHelper.CacheRemoveAsync(keys);
 		}
@@ -118,9 +124,13 @@ namespace es.BLL {
 			public SelectBuild WhereId(params int[] Id) => this.Where1Or(@"a.[id] = {0}", Id);
 			public SelectBuild WhereIdRange(int? begin) => base.Where(@"a.[id] >= {0}", begin);
 			public SelectBuild WhereIdRange(int? begin, int? end) => end == null ? this.WhereIdRange(begin) : base.Where(@"a.[id] between {0} and {1}", begin, end);
+			public SelectBuild WhereF_bit(params bool?[] F_bit) => this.Where1Or(@"a.[f_bit] = {0}", F_bit);
 			public SelectBuild WhereF_ShortCode(params int?[] F_ShortCode) => this.Where1Or(@"a.[F_ShortCode] = {0}", F_ShortCode);
 			public SelectBuild WhereF_ShortCodeRange(int? begin) => base.Where(@"a.[F_ShortCode] >= {0}", begin);
 			public SelectBuild WhereF_ShortCodeRange(int? begin, int? end) => end == null ? this.WhereF_ShortCodeRange(begin) : base.Where(@"a.[F_ShortCode] between {0} and {1}", begin, end);
+			public SelectBuild WhereF_tinyint(params byte?[] F_tinyint) => this.Where1Or(@"a.[f_tinyint] = {0}", F_tinyint);
+			public SelectBuild WhereF_tinyintRange(byte? begin) => base.Where(@"a.[f_tinyint] >= {0}", begin);
+			public SelectBuild WhereF_tinyintRange(byte? begin, byte? end) => end == null ? this.WhereF_tinyintRange(begin) : base.Where(@"a.[f_tinyint] between {0} and {1}", begin, end);
 			public SelectBuild(IDAL dal) : base(dal, SqlHelper.Instance) { }
 		}
 	}

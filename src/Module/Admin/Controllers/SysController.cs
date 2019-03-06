@@ -73,17 +73,17 @@ Slots：{RedisHelper.Instance.SlotCache.Count}/16384, {pool.StatisticsFullily}
 			dir3 = Sysdir.Insert(dir2.Id, DateTime.Now, "编辑", 3, "/goods_tag/edit");
 			dir3 = Sysdir.Insert(dir2.Id, DateTime.Now, "删除", 4, "/goods_tag/del");
 
-			dir2 = Sysdir.Insert(dir1.Id, DateTime.Now, "Sys_Area", 5, "/Sys_Area/");
-			dir3 = Sysdir.Insert(dir2.Id, DateTime.Now, "列表", 1, "/Sys_Area/");
-			dir3 = Sysdir.Insert(dir2.Id, DateTime.Now, "添加", 2, "/Sys_Area/add");
-			dir3 = Sysdir.Insert(dir2.Id, DateTime.Now, "编辑", 3, "/Sys_Area/edit");
-			dir3 = Sysdir.Insert(dir2.Id, DateTime.Now, "删除", 4, "/Sys_Area/del");
-
-			dir2 = Sysdir.Insert(dir1.Id, DateTime.Now, "tag", 6, "/tag/");
+			dir2 = Sysdir.Insert(dir1.Id, DateTime.Now, "tag", 5, "/tag/");
 			dir3 = Sysdir.Insert(dir2.Id, DateTime.Now, "列表", 1, "/tag/");
 			dir3 = Sysdir.Insert(dir2.Id, DateTime.Now, "添加", 2, "/tag/add");
 			dir3 = Sysdir.Insert(dir2.Id, DateTime.Now, "编辑", 3, "/tag/edit");
 			dir3 = Sysdir.Insert(dir2.Id, DateTime.Now, "删除", 4, "/tag/del");
+
+			dir2 = Sysdir.Insert(dir1.Id, DateTime.Now, "tb_alltype", 6, "/tb_alltype/");
+			dir3 = Sysdir.Insert(dir2.Id, DateTime.Now, "列表", 1, "/tb_alltype/");
+			dir3 = Sysdir.Insert(dir2.Id, DateTime.Now, "添加", 2, "/tb_alltype/add");
+			dir3 = Sysdir.Insert(dir2.Id, DateTime.Now, "编辑", 3, "/tb_alltype/edit");
+			dir3 = Sysdir.Insert(dir2.Id, DateTime.Now, "删除", 4, "/tb_alltype/del");
 
 			dir2 = Sysdir.Insert(dir1.Id, DateTime.Now, "test", 7, "/test/");
 			dir3 = Sysdir.Insert(dir2.Id, DateTime.Now, "列表", 1, "/test/");

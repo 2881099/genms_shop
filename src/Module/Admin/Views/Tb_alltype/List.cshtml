@@ -1,0 +1,139 @@
+﻿@{ 
+	Layout = "";
+}
+
+<div class="box">
+	<div class="box-header with-border">
+		<h3 id="box-title" class="box-title"></h3>
+		<span class="form-group mr15"></span><a href="./add" data-toggle="modal" class="btn btn-success pull-right">添加</a>
+	</div>
+	<div class="box-body">
+		<div class="table-responsive">
+			<form id="form_search">
+				<div id="div_filter"></div>
+			</form>
+			<form id="form_list" action="./del" method="post">
+				@Html.AntiForgeryToken()
+				<input type="hidden" name="__callback" value="del_callback"/>
+				<table id="GridView1" cellspacing="0" rules="all" border="1" style="border-collapse:collapse;" class="table table-bordered table-hover">
+					<tr>
+						<th scope="col" style="width:2%;"><input type="checkbox" onclick="$('#GridView1 tbody tr').each(function (idx, el) { var chk = $(el).find('td:first input[type=\'checkbox\']')[0]; if (chk) chk.checked = !chk.checked; });" /></th>
+						<th scope="col">Id</th>
+						<th scope="col">testFieldBool1111</th>
+						<th scope="col">testFieldBoolNullable</th>
+						<th scope="col">testFieldByte</th>
+						<th scope="col">testFieldByteNullable</th>
+						<th scope="col">testFieldBytes</th>
+						<th scope="col">testFieldDateTime</th>
+						<th scope="col">testFieldDateTimeNullable</th>
+						<th scope="col">testFieldDateTimeNullableOffset</th>
+						<th scope="col">testFieldDateTimeOffset</th>
+						<th scope="col">testFieldDecimal</th>
+						<th scope="col">testFieldDecimalNullable</th>
+						<th scope="col">testFieldDouble</th>
+						<th scope="col">testFieldDoubleNullable</th>
+						<th scope="col">testFieldEnum1</th>
+						<th scope="col">testFieldEnum1Nullable</th>
+						<th scope="col">testFieldEnum2</th>
+						<th scope="col">testFieldEnum2Nullable</th>
+						<th scope="col">testFieldFloat</th>
+						<th scope="col">testFieldFloatNullable</th>
+						<th scope="col">testFieldGuid</th>
+						<th scope="col">testFieldGuidNullable</th>
+						<th scope="col">testFieldInt</th>
+						<th scope="col">testFieldIntNullable</th>
+						<th scope="col">testFieldLong</th>
+						<th scope="col">testFieldSByte</th>
+						<th scope="col">testFieldSByteNullable</th>
+						<th scope="col">testFieldShort</th>
+						<th scope="col">testFieldShortNullable</th>
+						<th scope="col">testFieldString</th>
+						<th scope="col">testFieldTimeSpan</th>
+						<th scope="col">testFieldTimeSpanNullable</th>
+						<th scope="col">testFieldUInt</th>
+						<th scope="col">testFieldUIntNullable</th>
+						<th scope="col">testFieldULong</th>
+						<th scope="col">testFieldULongNullable</th>
+						<th scope="col">testFieldUShort</th>
+						<th scope="col">testFieldUShortNullable</th>
+						<th scope="col">testFielLongNullable</th>
+						<th scope="col" style="width:5%;">&nbsp;</th>
+					</tr>
+					<tbody>
+						@foreach(Tb_alltypeInfo item in ViewBag.items) {
+							<tr>
+								<td><input type="checkbox" id="id" name="id" value="@item.Id" /></td>
+								<td>@item.Id</td>
+								<td>@item.TestFieldBool1111</td>
+								<td>@item.TestFieldBoolNullable</td>
+								<td>@item.TestFieldByte</td>
+								<td>@item.TestFieldByteNullable</td>
+								<td>@item.TestFieldBytes</td>
+								<td>@item.TestFieldDateTime</td>
+								<td>@item.TestFieldDateTimeNullable</td>
+								<td>@item.TestFieldDateTimeNullableOffset</td>
+								<td>@item.TestFieldDateTimeOffset</td>
+								<td>@item.TestFieldDecimal</td>
+								<td>@item.TestFieldDecimalNullable</td>
+								<td>@item.TestFieldDouble</td>
+								<td>@item.TestFieldDoubleNullable</td>
+								<td>@item.TestFieldEnum1</td>
+								<td>@item.TestFieldEnum1Nullable</td>
+								<td>@item.TestFieldEnum2</td>
+								<td>@item.TestFieldEnum2Nullable</td>
+								<td>@item.TestFieldFloat</td>
+								<td>@item.TestFieldFloatNullable</td>
+								<td>@item.TestFieldGuid</td>
+								<td>@item.TestFieldGuidNullable</td>
+								<td>@item.TestFieldInt</td>
+								<td>@item.TestFieldIntNullable</td>
+								<td>@item.TestFieldLong</td>
+								<td>@item.TestFieldSByte</td>
+								<td>@item.TestFieldSByteNullable</td>
+								<td>@item.TestFieldShort</td>
+								<td>@item.TestFieldShortNullable</td>
+								<td>@item.TestFieldString</td>
+								<td>@item.TestFieldTimeSpan</td>
+								<td>@item.TestFieldTimeSpanNullable</td>
+								<td>@item.TestFieldUInt</td>
+								<td>@item.TestFieldUIntNullable</td>
+								<td>@item.TestFieldULong</td>
+								<td>@item.TestFieldULongNullable</td>
+								<td>@item.TestFieldUShort</td>
+								<td>@item.TestFieldUShortNullable</td>
+								<td>@item.TestFielLongNullable</td>
+								<td><a href="./edit?Id=@item.Id">修改</a></td>
+							</tr>
+						}
+					</tbody>
+				</table>
+			</form>
+			<a id="btn_delete_sel" href="#" class="btn btn-danger pull-right">删除选中项</a>
+			<div id="kkpager"></div>
+		</div>
+	</div>
+</div>
+
+@{
+}
+<script type="text/javascript">
+	(function () {
+		top.del_callback = function(rt) {
+			if (rt.success) return top.mainViewNav.goto('./?' + new Date().getTime());
+			alert(rt.message);
+		};
+
+		var qs = _clone(top.mainViewNav.query);
+		var page = cint(qs.page, 1);
+		delete qs.page;
+		$('#kkpager').html(cms2Pager(@ViewBag.count, page, 20, qs, 'page'));
+		var fqs = _clone(top.mainViewNav.query);
+		delete fqs.page;
+		var fsc = [
+			null
+		];
+		fsc.pop();
+		cms2Filter(fsc, fqs);
+		top.mainViewInit();
+	})();
+</script>

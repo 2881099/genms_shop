@@ -17,11 +17,11 @@ namespace es.DAL {
 		public string Sort { get { return TSQL.Sort; } }
 		internal class TSQL {
 			internal static readonly string Table = "[dbo].[test]";
-			internal static readonly string Field = "a.[id], a.[F_ShortCode]";
+			internal static readonly string Field = "a.[id], a.[f_bit], a.[F_ShortCode], a.[f_tinyint]";
 			internal static readonly string Sort = "a.[id]";
 			internal static readonly string Delete = "DELETE FROM [dbo].[test] OUTPUT " + Field.Replace(@"a.[", @"DELETED.[") + "WHERE ";
-			internal static readonly string InsertField = "[id], [F_ShortCode]";
-			internal static readonly string InsertValues = "@id, @F_ShortCode";
+			internal static readonly string InsertField = "[id], [f_bit], [F_ShortCode], [f_tinyint]";
+			internal static readonly string InsertValues = "@id, @f_bit, @F_ShortCode, @f_tinyint";
 			internal static readonly string InsertMultiFormat = "INSERT INTO [dbo].[test](" + InsertField + ") OUTPUT " + Field.Replace(@"a.[", @"INSERTED.[") + " VALUES{0}";
 			internal static readonly string Insert = string.Format(InsertMultiFormat, $"({InsertValues})");
 		}
@@ -31,7 +31,9 @@ namespace es.DAL {
 		protected static SqlParameter[] GetParameters(TestInfo item) {
 			return new SqlParameter[] {
 				new SqlParameter { ParameterName = "@id", SqlDbType = SqlDbType.Int, Size = 4, Value = item.Id }, 
-				new SqlParameter { ParameterName = "@F_ShortCode", SqlDbType = SqlDbType.Int, Size = 4, Value = item.F_ShortCode }
+				new SqlParameter { ParameterName = "@f_bit", SqlDbType = SqlDbType.Bit, Size = 1, Value = item.F_bit }, 
+				new SqlParameter { ParameterName = "@F_ShortCode", SqlDbType = SqlDbType.Int, Size = 4, Value = item.F_ShortCode }, 
+				new SqlParameter { ParameterName = "@f_tinyint", SqlDbType = SqlDbType.TinyInt, Size = 1, Value = item.F_tinyint }
 			};
 		}
 		public TestInfo GetItem(SqlDataReader dr) {
@@ -40,13 +42,17 @@ namespace es.DAL {
 		}
 		public object GetItem(SqlDataReader dr, ref int dataIndex) {
 			TestInfo item = new TestInfo();
-			if (!dr.IsDBNull(++dataIndex)) item.Id = dr.GetInt32(dataIndex); if (item.Id == null) { dataIndex += 1; return null; }
+			if (!dr.IsDBNull(++dataIndex)) item.Id = dr.GetInt32(dataIndex); if (item.Id == null) { dataIndex += 3; return null; }
+			if (!dr.IsDBNull(++dataIndex)) item.F_bit = dr.GetBoolean(dataIndex);
 			if (!dr.IsDBNull(++dataIndex)) item.F_ShortCode = dr.GetInt32(dataIndex);
+			if (!dr.IsDBNull(++dataIndex)) item.F_tinyint = dr.GetByte(dataIndex);
 			return item;
 		}
 		private void CopyItemAllField(TestInfo item, TestInfo newitem) {
 			item.Id = newitem.Id;
+			item.F_bit = newitem.F_bit;
 			item.F_ShortCode = newitem.F_ShortCode;
+			item.F_tinyint = newitem.F_tinyint;
 		}
 		#endregion
 
@@ -61,7 +67,9 @@ namespace es.DAL {
 			var sub = new SqlUpdateBuild(new List<TestInfo> { item }, false);
 			var ignore = ignoreFields?.ToDictionary(a => a, StringComparer.CurrentCultureIgnoreCase) ?? new Dictionary<string, string>();
 			if (ignore.ContainsKey("id") == false) sub.SetId(item.Id);
+			if (ignore.ContainsKey("f_bit") == false) sub.SetF_bit(item.F_bit);
 			if (ignore.ContainsKey("F_ShortCode") == false) sub.SetF_ShortCode(item.F_ShortCode);
+			if (ignore.ContainsKey("f_tinyint") == false) sub.SetF_tinyint(item.F_tinyint);
 			return sub;
 		}
 		#region class SqlUpdateBuild
@@ -154,6 +162,11 @@ namespace es.DAL {
 				return this.Set("[id]", string.Concat("[id] + @id_", _parameters.Count), 
 					new SqlParameter { ParameterName = string.Concat("@id_", _parameters.Count), SqlDbType = SqlDbType.Int, Size = 4, Value = value });
 			}
+			public SqlUpdateBuild SetF_bit(bool? value) {
+				if (_dataSource != null && _setAs.ContainsKey("F_bit") == false) _setAs.Add("F_bit", (olditem, newitem) => olditem.F_bit = newitem.F_bit);
+				return this.Set("[f_bit]", string.Concat("@f_bit_", _parameters.Count), 
+					new SqlParameter { ParameterName = string.Concat("@f_bit_", _parameters.Count), SqlDbType = SqlDbType.Bit, Size = 1, Value = value });
+			}
 			public SqlUpdateBuild SetF_ShortCode(int? value) {
 				if (_dataSource != null && _setAs.ContainsKey("F_ShortCode") == false) _setAs.Add("F_ShortCode", (olditem, newitem) => olditem.F_ShortCode = newitem.F_ShortCode);
 				return this.Set("[F_ShortCode]", string.Concat("@F_ShortCode_", _parameters.Count), 
@@ -163,6 +176,16 @@ namespace es.DAL {
 				if (_dataSource != null && _setAs.ContainsKey("F_ShortCode") == false) _setAs.Add("F_ShortCode", (olditem, newitem) => olditem.F_ShortCode = newitem.F_ShortCode);
 				return this.Set("[F_ShortCode]", string.Concat("[F_ShortCode] + @F_ShortCode_", _parameters.Count), 
 					new SqlParameter { ParameterName = string.Concat("@F_ShortCode_", _parameters.Count), SqlDbType = SqlDbType.Int, Size = 4, Value = value });
+			}
+			public SqlUpdateBuild SetF_tinyint(byte? value) {
+				if (_dataSource != null && _setAs.ContainsKey("F_tinyint") == false) _setAs.Add("F_tinyint", (olditem, newitem) => olditem.F_tinyint = newitem.F_tinyint);
+				return this.Set("[f_tinyint]", string.Concat("@f_tinyint_", _parameters.Count), 
+					new SqlParameter { ParameterName = string.Concat("@f_tinyint_", _parameters.Count), SqlDbType = SqlDbType.TinyInt, Size = 1, Value = value });
+			}
+			public SqlUpdateBuild SetF_tinyintIncrement(byte? value) {
+				if (_dataSource != null && _setAs.ContainsKey("F_tinyint") == false) _setAs.Add("F_tinyint", (olditem, newitem) => olditem.F_tinyint = newitem.F_tinyint);
+				return this.Set("[f_tinyint]", string.Concat("[f_tinyint] + @f_tinyint_", _parameters.Count), 
+					new SqlParameter { ParameterName = string.Concat("@f_tinyint_", _parameters.Count), SqlDbType = SqlDbType.TinyInt, Size = 1, Value = value });
 			}
 		}
 		#endregion
@@ -185,14 +208,14 @@ namespace es.DAL {
 			var itemsArr = items?.Where(a => a != null).ToArray();
 			if (itemsArr == null || itemsArr.Any() == false) return (null, null);
 			var values = "";
-			var parms = new SqlParameter[itemsArr.Length * 2];
+			var parms = new SqlParameter[itemsArr.Length * 4];
 			for (var a = 0; a < itemsArr.Length; a++) {
 				var item = itemsArr[a];
 				values += $",({TSQL.InsertValues.Replace(", ", a + ", ")}{a})";
 				var tmparms = GetParameters(item);
 				for (var b = 0; b < tmparms.Length; b++) {
 					tmparms[b].ParameterName += a;
-					parms[a * 2 + b] = tmparms[b];
+					parms[a * 4 + b] = tmparms[b];
 				}
 			}
 			return (string.Format(TSQL.InsertMultiFormat, values.Substring(1)), parms);
@@ -205,8 +228,10 @@ namespace es.DAL {
 		}
 		async public Task<(object result, int dataIndex)> GetItemAsync(SqlDataReader dr, int dataIndex) {
 			TestInfo item = new TestInfo();
-			if (!await dr.IsDBNullAsync(++dataIndex)) item.Id = await dr.GetFieldValueAsync<int>(dataIndex); if (item.Id == null) { dataIndex += 1; return (null, dataIndex); }
+			if (!await dr.IsDBNullAsync(++dataIndex)) item.Id = await dr.GetFieldValueAsync<int>(dataIndex); if (item.Id == null) { dataIndex += 3; return (null, dataIndex); }
+			if (!await dr.IsDBNullAsync(++dataIndex)) item.F_bit = await dr.GetFieldValueAsync<bool>(dataIndex);
 			if (!await dr.IsDBNullAsync(++dataIndex)) item.F_ShortCode = await dr.GetFieldValueAsync<int>(dataIndex);
+			if (!await dr.IsDBNullAsync(++dataIndex)) item.F_tinyint = await dr.GetFieldValueAsync<byte>(dataIndex);
 			return (item, dataIndex);
 		}
 		async public Task<TestInfo> DeleteAsync(int? Id) {

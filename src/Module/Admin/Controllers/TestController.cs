@@ -44,19 +44,23 @@ namespace es.Module.Admin.Controllers {
 		/***************************************** POST *****************************************/
 		[HttpPost(@"add")]
 		[ValidateAntiForgeryToken]
-		async public Task<APIReturn> _Add([FromForm] int? Id, [FromForm] int? F_ShortCode) {
+		async public Task<APIReturn> _Add([FromForm] int? Id, [FromForm] bool F_bit, [FromForm] int? F_ShortCode, [FromForm] byte? F_tinyint) {
 			TestInfo item = new TestInfo();
 			item.Id = Id;
+			item.F_bit = F_bit;
 			item.F_ShortCode = F_ShortCode;
+			item.F_tinyint = F_tinyint;
 			item = await Test.InsertAsync(item);
 			return APIReturn.成功.SetData("item", item.ToBson());
 		}
 		[HttpPost(@"edit")]
 		[ValidateAntiForgeryToken]
-		async public Task<APIReturn> _Edit([FromQuery] int Id, [FromForm] int? F_ShortCode) {
+		async public Task<APIReturn> _Edit([FromQuery] int Id, [FromForm] bool F_bit, [FromForm] int? F_ShortCode, [FromForm] byte? F_tinyint) {
 			TestInfo item = await Test.GetItemAsync(Id);
 			if (item == null) return APIReturn.记录不存在_或者没有权限;
+			item.F_bit = F_bit;
 			item.F_ShortCode = F_ShortCode;
+			item.F_tinyint = F_tinyint;
 			int affrows = await Test.UpdateAsync(item);
 			if (affrows > 0) return APIReturn.成功.SetMessage($"更新成功，影响行数：{affrows}");
 			return APIReturn.失败;

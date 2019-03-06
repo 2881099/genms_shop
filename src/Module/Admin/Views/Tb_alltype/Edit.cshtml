@@ -1,0 +1,240 @@
+﻿@{
+	Layout = "";
+	Tb_alltypeInfo item = ViewBag.item;
+}
+
+<div class="box">
+	<div class="box-header with-border">
+		<h3 class="box-title" id="box-title"></h3>
+	</div>
+	<div class="box-body">
+		<div class="table-responsive">
+			<form id="form_add" method="post">
+				@Html.AntiForgeryToken()
+				<input type="hidden" name="__callback" value="edit_callback" />
+				<div>
+					<table cellspacing="0" rules="all" class="table table-bordered table-hover" border="1" style="border-collapse:collapse;">
+						@if (item != null) {
+							<tr>
+								<td>Id</td>
+								<td><input name="Id" type="text" readonly class="datepicker" style="width:20%;background-color:#ddd;" /></td>
+							</tr>
+						}
+						<tr>
+							<td>testFieldBool1111</td>
+							<td id="TestFieldBool1111_td"><input name="TestFieldBool1111" type="checkbox" value="true" /></td>
+						</tr>
+						<tr>
+							<td>testFieldBoolNullable</td>
+							<td id="TestFieldBoolNullable_td"><input name="TestFieldBoolNullable" type="checkbox" value="true" /></td>
+						</tr>
+						<tr>
+							<td>testFieldByte</td>
+							<td><input name="TestFieldByte" type="text" class="datepicker" style="width:60%;" /></td>
+						</tr>
+						<tr>
+							<td>testFieldByteNullable</td>
+							<td><input name="TestFieldByteNullable" type="text" class="datepicker" style="width:60%;" /></td>
+						</tr>
+						<tr>
+							<td>testFieldBytes</td>
+							<td><input name="TestFieldBytes" type="text" class="datepicker" style="width:60%;" /></td>
+						</tr>
+						<tr>
+							<td>testFieldDateTime</td>
+							<td><input name="TestFieldDateTime" type="text" class="datepicker" /></td>
+						</tr>
+						<tr>
+							<td>testFieldDateTimeNullable</td>
+							<td><input name="TestFieldDateTimeNullable" type="text" class="datepicker" /></td>
+						</tr>
+						<tr>
+							<td>testFieldDateTimeNullableOffset</td>
+							<td><input name="TestFieldDateTimeNullableOffset" type="text" class="datepicker" /></td>
+						</tr>
+						<tr>
+							<td>testFieldDateTimeOffset</td>
+							<td><input name="TestFieldDateTimeOffset" type="text" class="datepicker" /></td>
+						</tr>
+						<tr>
+							<td>testFieldDecimal</td>
+							<td>
+								<div class="input-group" style="width:200px;">
+									<span class="input-group-addon">￥</span>
+									<input name="TestFieldDecimal" type="text" class="form-control" data-inputmask="'mask': '9', 'repeat': 10, 'greedy': false" data-mask />
+									<span class="input-group-addon">.00</span>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>testFieldDecimalNullable</td>
+							<td>
+								<div class="input-group" style="width:200px;">
+									<span class="input-group-addon">￥</span>
+									<input name="TestFieldDecimalNullable" type="text" class="form-control" data-inputmask="'mask': '9', 'repeat': 10, 'greedy': false" data-mask />
+									<span class="input-group-addon">.00</span>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>testFieldDouble</td>
+							<td>
+								<div class="input-group" style="width:200px;">
+									<span class="input-group-addon">￥</span>
+									<input name="TestFieldDouble" type="text" class="form-control" data-inputmask="'mask': '9', 'repeat': 10, 'greedy': false" data-mask />
+									<span class="input-group-addon">.00</span>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>testFieldDoubleNullable</td>
+							<td>
+								<div class="input-group" style="width:200px;">
+									<span class="input-group-addon">￥</span>
+									<input name="TestFieldDoubleNullable" type="text" class="form-control" data-inputmask="'mask': '9', 'repeat': 10, 'greedy': false" data-mask />
+									<span class="input-group-addon">.00</span>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>testFieldEnum1</td>
+							<td><input name="TestFieldEnum1" type="text" class="form-control" data-inputmask="'mask': '9', 'repeat': 6, 'greedy': false" data-mask style="width:200px;" /></td>
+						</tr>
+						<tr>
+							<td>testFieldEnum1Nullable</td>
+							<td><input name="TestFieldEnum1Nullable" type="text" class="form-control" data-inputmask="'mask': '9', 'repeat': 6, 'greedy': false" data-mask style="width:200px;" /></td>
+						</tr>
+						<tr>
+							<td>testFieldEnum2</td>
+							<td><input name="TestFieldEnum2" type="text" class="form-control" data-inputmask="'mask': '9', 'repeat': 6, 'greedy': false" data-mask style="width:200px;" /></td>
+						</tr>
+						<tr>
+							<td>testFieldEnum2Nullable</td>
+							<td><input name="TestFieldEnum2Nullable" type="text" class="form-control" data-inputmask="'mask': '9', 'repeat': 6, 'greedy': false" data-mask style="width:200px;" /></td>
+						</tr>
+						<tr>
+							<td>testFieldFloat</td>
+							<td>
+								<div class="input-group" style="width:200px;">
+									<span class="input-group-addon">￥</span>
+									<input name="TestFieldFloat" type="text" class="form-control" data-inputmask="'mask': '9', 'repeat': 10, 'greedy': false" data-mask />
+									<span class="input-group-addon">.00</span>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>testFieldFloatNullable</td>
+							<td>
+								<div class="input-group" style="width:200px;">
+									<span class="input-group-addon">￥</span>
+									<input name="TestFieldFloatNullable" type="text" class="form-control" data-inputmask="'mask': '9', 'repeat': 10, 'greedy': false" data-mask />
+									<span class="input-group-addon">.00</span>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>testFieldGuid</td>
+							<td><input name="TestFieldGuid" type="text" class="datepicker" style="width:60%;" /></td>
+						</tr>
+						<tr>
+							<td>testFieldGuidNullable</td>
+							<td><input name="TestFieldGuidNullable" type="text" class="datepicker" style="width:60%;" /></td>
+						</tr>
+						<tr>
+							<td>testFieldInt</td>
+							<td><input name="TestFieldInt" type="text" class="form-control" data-inputmask="'mask': '9', 'repeat': 6, 'greedy': false" data-mask style="width:200px;" /></td>
+						</tr>
+						<tr>
+							<td>testFieldIntNullable</td>
+							<td><input name="TestFieldIntNullable" type="text" class="form-control" data-inputmask="'mask': '9', 'repeat': 6, 'greedy': false" data-mask style="width:200px;" /></td>
+						</tr>
+						<tr>
+							<td>testFieldLong</td>
+							<td><input name="TestFieldLong" type="text" class="form-control" data-inputmask="'mask': '9', 'repeat': 6, 'greedy': false" data-mask style="width:200px;" /></td>
+						</tr>
+						<tr>
+							<td>testFieldSByte</td>
+							<td><input name="TestFieldSByte" type="text" class="datepicker" style="width:60%;" /></td>
+						</tr>
+						<tr>
+							<td>testFieldSByteNullable</td>
+							<td><input name="TestFieldSByteNullable" type="text" class="datepicker" style="width:60%;" /></td>
+						</tr>
+						<tr>
+							<td>testFieldShort</td>
+							<td><input name="TestFieldShort" type="text" class="form-control" data-inputmask="'mask': '9', 'repeat': 6, 'greedy': false" data-mask style="width:200px;" /></td>
+						</tr>
+						<tr>
+							<td>testFieldShortNullable</td>
+							<td><input name="TestFieldShortNullable" type="text" class="form-control" data-inputmask="'mask': '9', 'repeat': 6, 'greedy': false" data-mask style="width:200px;" /></td>
+						</tr>
+						<tr>
+							<td>testFieldString</td>
+							<td><input name="TestFieldString" type="text" class="datepicker" style="width:60%;" /></td>
+						</tr>
+						<tr>
+							<td>testFieldTimeSpan</td>
+							<td><input name="TestFieldTimeSpan" type="text" class="datepicker" style="width:60%;" /></td>
+						</tr>
+						<tr>
+							<td>testFieldTimeSpanNullable</td>
+							<td><input name="TestFieldTimeSpanNullable" type="text" class="datepicker" style="width:60%;" /></td>
+						</tr>
+						<tr>
+							<td>testFieldUInt</td>
+							<td><input name="TestFieldUInt" type="text" class="form-control" data-inputmask="'mask': '9', 'repeat': 6, 'greedy': false" data-mask style="width:200px;" /></td>
+						</tr>
+						<tr>
+							<td>testFieldUIntNullable</td>
+							<td><input name="TestFieldUIntNullable" type="text" class="form-control" data-inputmask="'mask': '9', 'repeat': 6, 'greedy': false" data-mask style="width:200px;" /></td>
+						</tr>
+						<tr>
+							<td>testFieldULong</td>
+							<td><input name="TestFieldULong" type="text" class="form-control" data-inputmask="'mask': '9', 'repeat': 6, 'greedy': false" data-mask style="width:200px;" /></td>
+						</tr>
+						<tr>
+							<td>testFieldULongNullable</td>
+							<td><input name="TestFieldULongNullable" type="text" class="form-control" data-inputmask="'mask': '9', 'repeat': 6, 'greedy': false" data-mask style="width:200px;" /></td>
+						</tr>
+						<tr>
+							<td>testFieldUShort</td>
+							<td><input name="TestFieldUShort" type="text" class="form-control" data-inputmask="'mask': '9', 'repeat': 6, 'greedy': false" data-mask style="width:200px;" /></td>
+						</tr>
+						<tr>
+							<td>testFieldUShortNullable</td>
+							<td><input name="TestFieldUShortNullable" type="text" class="form-control" data-inputmask="'mask': '9', 'repeat': 6, 'greedy': false" data-mask style="width:200px;" /></td>
+						</tr>
+						<tr>
+							<td>testFielLongNullable</td>
+							<td><input name="TestFielLongNullable" type="text" class="form-control" data-inputmask="'mask': '9', 'repeat': 6, 'greedy': false" data-mask style="width:200px;" /></td>
+						</tr>
+						<tr>
+							<td width="8%">&nbsp</td>
+							<td><input type="submit" value="@(item == null ? "添加" : "更新")" />&nbsp;<input type="button" value="取消" /></td>
+						</tr>
+					</table>
+				</div>
+			</form>
+
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+	(function () {
+		top.edit_callback = function (rt) {
+			if (rt.success) return top.mainViewNav.goto('./?' + new Date().getTime());
+			alert(rt.message);
+		};
+
+		var form = $('#form_add')[0];
+		var item = null;
+		@if (item != null) {
+			<text>
+			item = @Html.Json(item);
+			fillForm(form, item);
+			</text>
+		}
+		top.mainViewInit();
+	})();
+</script>
